@@ -1,7 +1,7 @@
 {
-  "name": "ng2_starter",
-  "version": "0.0.5",
-  "description": "ng2 + aot builder + karma and protractor as testers",
+  "name": "CostCost",
+  "version": "0.0.1",
+  "description": "car value comparator",
   "scripts": {
     "build": "npm run clean && npm run ngc && npm run rollup && cp src/index.html dist/index.html",
     "clean": "rimraf dist",
