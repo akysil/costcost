@@ -12,6 +12,7 @@
         "pree2e": "webdriver-manager update --standalone false --gecko false",
         "prod": "npm run build && webpack-dev-server --content-base dist --open",
         "rollup": "rollup -c config/rollup.js",
+        "start": "npm run dev",
         "test": "karma start config/karma.js --port 9876 || exit 0"
     },
     "bin": {
