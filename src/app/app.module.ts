@@ -6,8 +6,7 @@ import {HttpModule} from '@angular/http';
 import {CostComponent} from './components/cost/cost.component';
 import {CostTableComponent} from './components/cost-table/cost-table.component';
 
-import {DataEdmundsService} from './services/data-edmunds.service';
-import {LocalStorageService} from './services/local-storage.service'
+import {DataService} from './services/data.service';
 
 
 @NgModule({
@@ -20,7 +19,7 @@ import {LocalStorageService} from './services/local-storage.service'
     FormsModule,
     HttpModule
   ],
-  providers: [DataEdmundsService, LocalStorageService],
+  providers: [DataService],
   bootstrap: [CostComponent]
 })
 export class AppModule {

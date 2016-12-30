@@ -5,8 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {CostComponent} from './cost.component';
 import {CostTableComponent} from '../cost-table/cost-table.component';
 
-import {DataEdmundsService} from '../../services/data-edmunds.service';
-import {LocalStorageService} from '../../services/local-storage.service';
+import {DataService} from '../../services/data.service';
 
 
 describe('CostComponent', () => {
@@ -32,11 +31,7 @@ describe('CostComponent', () => {
       imports: [HttpModule],
       providers: [
         {
-          provide: DataEdmundsService,
-          useValue: null
-        },
-        {
-          provide: LocalStorageService,
+          provide: DataService,
           useValue: {
             getEdmundsAllMakes: () => {
               return new Observable((observer: any) => {

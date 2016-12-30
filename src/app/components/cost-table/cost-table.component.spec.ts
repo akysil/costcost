@@ -1,13 +1,10 @@
 import {HttpModule} from '@angular/http';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import {DebugElement} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
 import {CostTableComponent} from './cost-table.component';
 
-import {DataEdmundsService} from '../../services/data-edmunds.service';
-import {LocalStorageService} from '../../services/local-storage.service';
+import {DataService} from '../../services/data.service';
 
 describe('CostTableComponent', () => {
   
@@ -21,9 +18,8 @@ describe('CostTableComponent', () => {
       declarations: [CostTableComponent],
       imports: [HttpModule],
       providers: [
-        DataEdmundsService,
         {
-          provide: LocalStorageService,
+          provide: DataService,
           useValue: {
             getEdmundsAllMakes: () => {
               return new Observable((observer: any) => {

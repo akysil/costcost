@@ -1,11 +1,11 @@
-<table border="1">
+<table border="1" *ngIf="makes.length">
   <thead>
   <tr>
     <th>Makes</th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let make of allMakes.makes">
+  <tr *ngFor="let make of makes">
     <td>{{make.name}}</td>
   </tr>
   </tbody>
