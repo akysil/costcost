@@ -33,7 +33,7 @@ module.exports = function(config) {
         specReporter: karmaSpecReporterConfig,
         coverageReporter: {
             type: 'in-memory',
-            includeAllSources: true
+            includeAllSources: false
         },
         remapCoverageReporter: {
             'text-summary': null, // to show summary in console
@@ -45,7 +45,7 @@ module.exports = function(config) {
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['PhantomJS'],
-        singleRun: false
+        singleRun: false,
     };
     
     config.set(_config);
