@@ -1,6 +1,5 @@
-import {HttpModule} from '@angular/http';
 import {TestBed, async, ComponentFixture} from '@angular/core/testing';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
 import {CostComponent} from './cost.component';
 import {CostTableComponent} from '../cost-table/cost-table.component';
@@ -28,12 +27,11 @@ describe('CostComponent', () => {
         CostComponent,
         CostTableComponent
       ],
-      imports: [HttpModule],
       providers: [
         {
           provide: DataService,
           useValue: {
-            getEdmundsAllMakes: () => {
+            get: () => {
               return new Observable((observer: any) => {
                 observer.next({
                   makes: []

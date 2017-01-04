@@ -1,69 +1,80 @@
 import { async, getTestBed, TestBed } from '@angular/core/testing';
-import { BaseRequestOptions, Http, Response, ResponseOptions, XHRBackend } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
 
 import { DataService } from './data.service';
+import { EdmundsService } from './edmunds.service';
+import { Observable } from 'rxjs';
+import { DataHandlersService } from './data-handlers.service';
 
-describe('Service: DataService', () => {
-	
-	let testbed: TestBed;
-	let mockBackend: MockBackend;
-	let service: DataService;
-	let setupConnections: any;
-	let mockResponse: any;
-	
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			providers: [
-				BaseRequestOptions,
-				MockBackend,
-				DataService,
-				{
-					deps: [
-						MockBackend,
-						BaseRequestOptions
-					],
-					provide: Http,
-					useFactory: (backend: XHRBackend, defaultOptions: BaseRequestOptions) => {
-						return new Http(backend, defaultOptions);
-					}
-				}
-			]
-		});
-		
-		testbed      = getTestBed();
-		mockBackend  = testbed.get(MockBackend);
-		service      = testbed.get(DataService);
-		mockResponse = {
-			body: [
-				{
-					id: 1,
-					questions: [],
-					title: 'Car'
-				}
-			],
-			status: 200
-		};
-		
-		setupConnections = function (url: string,
-		                             backend: MockBackend = mockBackend,
-		                             options: any = mockResponse) {
-			backend.connections.subscribe((connection: MockConnection) => {
-				if (connection.request.url === url) {
-					const responseOptions = new ResponseOptions(options);
-					const response        = new Response(responseOptions);
-					connection.mockRespond(response);
-				}
-			});
-		};
-	}));
-	
-	it('should get getEdmundsAllMakes', async(() => {
-		setupConnections('https://api.edmunds.com/api/vehicle/v2/makes?fmt=json&api_key=z6d9yj4dkf8kjmn46gttx7mv');
-		
-		service.getEdmundsAllMakes().subscribe(data => {
-			expect(data).toBe(mockResponse.body);
-		});
-	}));
-	
+describe('DataService', () => {
+    let testbed: TestBed;
+    let dataService: DataService;
+    let mockData: any;
+    let edmundsServiceError: boolean;
+    
+    beforeEach(async(() => {
+        
+        TestBed.configureTestingModule({
+            providers: [
+                DataService,
+                {
+                    provide: DataHandlersService,
+                    useValue: {
+                        allMakes: (data: any) => data
+                    }
+                },
+                {
+                    provide: EdmundsService,
+                    useValue: {
+                        get: () => {
+                            if (edmundsServiceError) {
+                                return Observable.throw(new Error(`Test error!`));
+                            }
+                            return Observable.create((observer: any) => {
+                                observer.next(mockData);
+                                observer.complete();
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+        
+        testbed = getTestBed();
+        dataService = testbed.get(DataService);
+        
+    }));
+    
+    it('should be defined', async(() => {
+        expect(dataService).toBeDefined();
+    }));
+    
+    describe('get()', () => {
+        
+        it('should be defined', async(() => {
+            expect(dataService.get).toBeDefined();
+        }));
+        
+        it('should return Error when query is unrecognized', async(() => {
+            dataService.get('blah-blah-blah').subscribe(
+                () => {},
+                (e) => {
+                    expect(e.message).toBe('Unrecognized Data query "blah-blah-blah"!');
+                }
+            );
+        }));
+    
+        it('should return data', async(() => {
+        
+            mockData = {
+                makes: ['test']
+            };
+        
+            dataService.get('allMakes').subscribe(data => {
+                expect(data).toBe(mockData);
+            });
+        
+        }));
+        
+    });
+    
 });
