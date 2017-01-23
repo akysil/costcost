@@ -9,33 +9,41 @@ import { EdmundsDefaultsService } from './edmunds-defaults.service';
 @Injectable()
 export class EdmundsService {
     
-    private queries: any = {
-        makes: [],
-        details: ['maker','model','year','trim']
-    };
-    
     constructor(private http: Http, private edmundsDefaults: EdmundsDefaultsService) {
         //
     }
     
     public get = (query: string, options: Object = {}, params: Object = {}): Observable<any> => {
         
-        let urlPrefix: string | Error = this.urlPrefix(query, options);
-        
+        let urlPrefix: any = this.urlPrefix(query, options);
+    
         return (urlPrefix instanceof Error) ?
             Observable.throw(urlPrefix) :
-            this.http
-                .get(this.edmundsDefaults.api_base + urlPrefix, {search: this.searchParams(params)})
-                .map((response) => response.json());
+            Observable.create((observer: any) => {
+                
+                let local = localStorage.getItem(urlPrefix);
+                if (local) {
+                    observer.next(JSON.parse(local));
+                    observer.complete();
+                } else {
+                    this.http
+                        .get(this.edmundsDefaults.api_base + urlPrefix, {search: this.searchParams(params)})
+                        .subscribe((response) => {
+                            localStorage.setItem(urlPrefix, JSON.stringify(response.json()));
+                            observer.next(response.json());
+                            observer.complete();
+                        });
+                }
+            });
     };
     
     private urlPrefix = function (query: string, options: Object): string | Error {
+    
+        let prefix = composePrefix(options);
         
-        if (!this.queries[query]) {
+        if (!prefix) {
             return new Error(`Unrecognized Edmunds query "${query}"!`);
         }
-        
-        let prefix = composePrefix(this.queries[query]);
         
         if (prefix.indexOf('undefined') > -1) {
             return new Error(`Missed options in Edmunds query "${query}"!`);
@@ -43,10 +51,15 @@ export class EdmundsService {
         
         return prefix;
         
-        function composePrefix(keys: Array<string>) {
+        function composePrefix(keys: any) {
             
-            return (!keys.length) ? query :
-                `${query}/${keys.map((key: string) => String(options[key])).join('/')}`;
+            let pat = {
+                makes: `makes`,
+                style: `styles/${keys.id}`,
+                styles: `${keys.makeNiceName}/${keys.modelNiceName}/${keys.year}/styles`
+            };
+            
+            return pat[query];
         }
     };
     

@@ -78,7 +78,7 @@ describe('EdmundsService', () => {
                 });
             
             service.get('makes').subscribe(data => {
-                expect(data).toBe(mockResponse.body);
+                expect(data).toEqual(mockResponse.body);
             });
         }));
         
@@ -149,12 +149,13 @@ describe('EdmundsService', () => {
         }));
         
         it('should return Error when required query options are missed', async(() => {
+            const query = 'styles';
             try {
                 service
-                    .get('details', {model: 'Test'})
+                    .get(query, {model: 'Test'})
                     .subscribe();
             } catch (e) {
-                expect(e.message).toBe('Missed options in Edmunds query "details"!');
+                expect(e.message).toBe(`Missed options in Edmunds query "${query}"!`);
             }
         }));
         
