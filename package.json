@@ -3,7 +3,7 @@
     "version": "0.0.4",
     "description": "car value comparator",
     "scripts": {
-        "clean": "rimraf dist && rimraf aot",
+        "clean": "rimraf dist && rimraf aot && rimraf src/**/*.js && rimraf src/**/*.map",
         "coverage": "webpack-dev-server --content-base coverage/ --port 9875 --open --colors",
         "build": "npm run clean && npm run ngc && npm run rollup && cp src/index.html dist/index.html",
         "dev": "webpack-dev-server --config config/webpack.js --progress --inline",
