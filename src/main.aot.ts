@@ -7,4 +7,4 @@ import './style.css';
 enableProdMode();
 
 platformBrowser()
-	.bootstrapModuleFactory(AppModuleNgFactory);
+    .bootstrapModuleFactory(AppModuleNgFactory);

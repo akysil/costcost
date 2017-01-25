@@ -6,7 +6,7 @@ import filesize    from 'rollup-plugin-filesize';
 import scss        from 'rollup-plugin-scss';
 
 export default {
-    entry: 'src/main-prod.js',
+    entry: 'src/main.aot.js',
     dest: 'dist/app.js', // output a single application bundle
     sourceMap: false,
     format: 'iife',

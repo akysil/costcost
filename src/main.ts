@@ -3,4 +3,4 @@ import { AppModule } from './app/app.module';
 import './style.css';
 
 platformBrowserDynamic()
-	.bootstrapModule(AppModule);
+    .bootstrapModule(AppModule);
