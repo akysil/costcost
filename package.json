@@ -4,18 +4,20 @@
     "description": "car value comparator",
     "scripts": {
         "clean": "rimraf dist && rimraf aot && rimraf src/**/*.js && rimraf src/**/*.map",
-        "coverage": "webpack-dev-server --content-base coverage/ --port 9875 --open --colors",
+        "coverage": "browser-sync start --server coverage --files coverage --port 9876",
         "build": "npm run clean && npm run ngc && npm run rollup && cp src/index.html dist/index.html",
         "dev": "webpack-dev-server --config config/webpack.js --progress --inline",
         "e2e": "protractor ./config/protractor.js || exit 0",
+        "browser-sync": "browser-sync",
         "ngc": "ngc -p ngcconfig.json",
         "pree2e": "webdriver-manager update --standalone false --gecko false",
-        "prod": "npm run build && webpack-dev-server --content-base dist --open",
+        "prod": "npm run build && browser-sync start --server dist --files dist --port 8081",
         "rollup": "rollup -c config/rollup.js",
         "start": "npm run clean && npm run dev",
-        "test": "karma start config/karma.js --port 9876 || exit 0"
+        "test": "karma start config/karma.js --port 9875 || exit 0"
     },
     "bin": {
+        "browser-sync": "node_modules/.bin/browser-sync",
         "ngc": "node_modules/.bin/ngc",
         "rollup": "node_modules/.bin/rollup"
     },
@@ -43,9 +45,10 @@
         "@types/node": "^6.0.45",
         "angular2-template-loader": "^0.4.0",
         "awesome-typescript-loader": "^3.0.0-beta.18",
-        "css-loader": "^0.23.1",
+        "browser-sync": "^2.18.6",
         "core-js": "^2.4.1",
-        "extract-text-webpack-plugin": "^1.0.1",
+        "css-loader": "^0.23.1",
+        "extract-text-webpack-plugin": "^2.0.0-beta.5",
         "file-loader": "^0.8.5",
         "html-loader": "^0.4.3",
         "html-webpack-plugin": "^2.15.0",
@@ -74,8 +77,8 @@
         "style-loader": "^0.13.1",
         "ts-node": "^1.7.2",
         "typescript": "^2.1.4",
-        "webpack": "^1.13.0",
-        "webpack-dev-server": "^1.14.1",
+        "webpack": "^2.2.0",
+        "webpack-dev-server": "^2.2.0",
         "webpack-merge": "^0.14.0"
     }
 }

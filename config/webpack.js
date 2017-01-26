@@ -10,14 +10,14 @@ module.exports = {
     
     resolve: {
         // extensions for extension-less link
-        extensions: ['', '.ts', '.js']
+        extensions: ['.ts', '.js']
     },
     
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
-                loaders: [
+                use: [
                     // Typescript to ES5, guided by the tsconfig.json file
                     'awesome-typescript-loader',
                     // loads angular components' template and styles
@@ -27,32 +27,32 @@ module.exports = {
             {
                 test: /\.html$/,
                 // exports HTML as string
-                loader: 'html'
+                use: ['html-loader']
             },
             {
+                // TODO: looks bad
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-                loader: 'file?name=assets/[name].[hash].[ext]'
+                use: ['file-loader?name=assets/[name].[hash].[ext]']
             },
             {
                 test: /\.css$/,
                 // excludes css within app directory
                 exclude: helpers.path('src', 'app'),
                 // moves styles to separate bundle
-                loader: ExtractTextPlugin.extract(
-                    // adds CSS to the DOM by injecting a <style> tag
-                    'style',
-                    // @import and url(...) are interpreted like require()
-                    'css?sourceMap'
-                )
+                loader: ExtractTextPlugin.extract({
+                        fallbackLoader: 'style-loader',
+                        loader: 'css-loader' // 'css-loader?sourceMap'
+                })
             },
             {
                 test: /\.css$/,
                 // includes component-scoped styles
                 include: helpers.path('src', 'app'),
                 // loads css as string
-                loader: 'raw'
+                use: ['raw-loader']
             }
-        ]
+        ],
+        exprContextCritical: false
     },
     
     devtool: 'cheap-module-eval-source-map',
@@ -66,7 +66,9 @@ module.exports = {
     
     plugins: [
         // extract css from js (prepares them for HtmlWebpackPlugin)
-        new ExtractTextPlugin('[name].css'),
+        new ExtractTextPlugin({
+            filename: '[name].css'
+        }),
         
         // inject scripts and styles in html
         new HtmlWebpackPlugin({
