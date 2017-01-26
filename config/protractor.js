@@ -14,7 +14,7 @@ exports.config = {
         'browserName': 'chrome'
     },
     directConnect: true,
-    baseUrl: 'http://localhost:8080/',
+    baseUrl: 'http://localhost:8081/', // run on prod
     specs: ['../e2e/**/*.ts'],
     beforeLaunch: function() {
         require('ts-node').register({
