@@ -22,14 +22,14 @@ module.exports = {
                 loader: 'null-loader'
             },
             {
-                test: /\.css$/,
+                test: /\.(css|scss)$/,
                 exclude: helpers.path('src', 'app'),
                 loader: 'null-loader'
             },
             {
-                test: /\.css$/,
+                test: /\.(css|scss)$/,
                 include: helpers.path('src', 'app'),
-                loader: 'raw-loader'
+                use: ['raw-loader', 'sass-loader']
             },
             {
                 test: /\.ts$/,

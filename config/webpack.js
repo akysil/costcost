@@ -40,8 +40,8 @@ module.exports = {
                 exclude: helpers.path('src', 'app'),
                 // moves styles to separate bundle
                 loader: ExtractTextPlugin.extract({
-                        fallbackLoader: 'style-loader',
-                        loader: 'css-loader' // 'css-loader?sourceMap'
+                    fallbackLoader: 'style-loader',
+                    loader: 'css-loader!sass-loader' // 'css-loader?sourceMap'
                 })
             },
             {
@@ -49,7 +49,7 @@ module.exports = {
                 // includes component-scoped styles
                 include: helpers.path('src', 'app'),
                 // loads css as string
-                use: ['raw-loader']
+                use: ['raw-loader', 'sass-loader']
             }
         ],
         exprContextCritical: false

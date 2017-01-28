@@ -3,9 +3,9 @@
     "version": "0.0.4",
     "description": "car value comparator",
     "scripts": {
-        "clean": "rimraf dist && rimraf aot && rimraf src/**/*.js && rimraf src/**/*.map",
+        "clean": "rimraf aot && rimraf coverage && rimraf src/**/*.js && rimraf src/**/*.map && rimraf src/**/*.css",
         "coverage": "browser-sync start --server coverage --files coverage --port 9876",
-        "build": "npm run clean && npm run ngc && npm run rollup && cp src/index.html dist/index.html",
+        "build": "rimraf dist && npm run clean && npm run sass && npm run scss-css && npm run ngc && npm run rollup && cp src/index.html dist/index.html && npm run css-scss && npm run clean",
         "dev": "webpack-dev-server --config config/webpack.js --progress --inline",
         "e2e": "protractor ./config/protractor.js || exit 0",
         "browser-sync": "browser-sync",
@@ -14,9 +14,13 @@
         "prod": "npm run build && browser-sync start --server dist --files dist --port 8081",
         "rollup": "rollup -c config/rollup.js",
         "start": "npm run clean && npm run dev",
-        "test": "karma start config/karma.js --port 9875 || exit 0"
+        "test": "karma start config/karma.js --port 9875 || exit 0",
+        "sass": "node-sass src -o src --output-style compressed",
+        "scss-css": "replace \".scss\" \".css\" src -r --include=\"*.ts\"",
+        "css-scss": "replace \".css\" \".scss\" src -r --include=\"*.ts\""
     },
     "bin": {
+        "replace": "node_modules/.bin/replace",
         "browser-sync": "node_modules/.bin/browser-sync",
         "ngc": "node_modules/.bin/ngc",
         "rollup": "node_modules/.bin/rollup"
@@ -63,10 +67,12 @@
         "karma-simple-reporter": "^2.0.0",
         "karma-sourcemap-loader": "^0.3.7",
         "karma-webpack": "^1.8.0",
+        "node-sass": "^4.4.0",
         "null-loader": "^0.1.1",
         "phantomjs-prebuilt": "^2.1.7",
         "protractor": "^4.0.14",
         "raw-loader": "^0.5.1",
+        "replace": "^0.3.0",
         "rimraf": "^2.5.2",
         "rollup": "^0.38.1",
         "rollup-plugin-commonjs": "^6.0.1",
@@ -74,6 +80,7 @@
         "rollup-plugin-node-resolve": "^2.0.0",
         "rollup-plugin-scss": "^0.2.0",
         "rollup-plugin-uglify": "^1.0.1",
+        "sass-loader": "^4.1.1",
         "style-loader": "^0.13.1",
         "ts-node": "^1.7.2",
         "typescript": "^2.1.4",
