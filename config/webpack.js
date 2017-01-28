@@ -35,7 +35,7 @@ module.exports = {
                 use: ['file-loader?name=assets/[name].[hash].[ext]']
             },
             {
-                test: /\.css$/,
+                test: /\.(css|scss)$/,
                 // excludes css within app directory
                 exclude: helpers.path('src', 'app'),
                 // moves styles to separate bundle
@@ -45,7 +45,7 @@ module.exports = {
                 })
             },
             {
-                test: /\.css$/,
+                test: /\.(css|scss)$/,
                 // includes component-scoped styles
                 include: helpers.path('src', 'app'),
                 // loads css as string
