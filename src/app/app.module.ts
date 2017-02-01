@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { CostComponent } from './components/cost/cost.component';
 import { CostTableComponent } from './components/cost-table/cost-table.component';
+import {CostCascadeComponent} from './components/cost-cascade-form/cost-cascade-form.component'
 
 import { EdmundsService } from './services/edmunds.service';
 import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
@@ -13,7 +14,8 @@ import { CostFormValidatorsService } from './services/cost-form-validators.servi
 @NgModule({
     declarations: [
         CostComponent,
-        CostTableComponent
+        CostTableComponent,
+        CostCascadeComponent
     ],
     imports: [
         BrowserModule,

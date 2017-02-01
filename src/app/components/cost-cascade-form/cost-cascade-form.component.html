@@ -1,0 +1,35 @@
+<form
+  [formGroup]="form"
+  novalidate
+  (ngSubmit)="submit()">
+
+    <fieldset formArrayName="carPick">
+        <template
+          ngFor
+          let-control
+          [ngForOf]="form.get('carPick')['controls']">
+
+            <label>{{control.label}}
+                <select formControlName="{{control.index}}">
+                    <option disabled selected hidden value="null">
+                        <span *ngIf="!control.options || control.options.length">Select</span>
+                        <span *ngIf="control.options && !control.options.length">Loading...</span>
+                    </option>
+                    <template ngFor let-option [ngForOf]="control.options">
+                        <option value="{{option.value}}">{{option.label}}</option>
+                    </template>
+                </select>
+            </label>
+
+            <span
+              *ngIf="control.hasError('required') && control.touched">
+                <strong>{{control.label}}</strong> is required
+            </span>
+
+            <hr *ngIf="!control.last">
+        </template>
+    </fieldset>
+    <br>
+    <button type="submit" [disabled]="form.invalid">Submit</button>
+    <br><br>
+</form>

@@ -1,64 +1,37 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Validators } from '@angular/forms';
-
-import { CostFormGroup, CostFormArray, CostFormControl } from '../../classes/cascade-form';
-import { CostFormService } from '../../services/cost-form.service';
-import { CostFormValidatorsService } from '../../services/cost-form-validators.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
                selector: 'cost-table',
                templateUrl: './cost-table.component.html',
-               styleUrls: ['./cost-table.component.css'],
-               providers: [CostFormService]
+               styleUrls: ['./cost-table.component.scss']
            })
 export class CostTableComponent implements OnInit {
     
-    // private detectChanges = this.changeDetector.detectChanges.bind(this.changeDetector);
+    // private _carsFromStorage = localStorage.getItem('costTableCars');
     
-    private _styleDetails: any;
+    cars: any[] = [];
     
-    constructor(private changeDetector: ChangeDetectorRef,
-                private service: CostFormService,
-                private validators: CostFormValidatorsService) {
+    constructor() {
     }
-    
-    form: CostFormGroup;
     
     ngOnInit() {
-        
-        this.form =
-            new CostFormGroup({
-                carPick: new CostFormArray(
-                    ['make', 'model', 'year', 'style'].map((controlOptions) => {
-                        return new CostFormControl(controlOptions, {
-                            optionsObserverFn: this.service.getSource,
-                            validator: Validators.required
-                        })
-                    }),
-                    this.validators.hasDisabled
-                )
-            });
-        
-        (<CostFormArray>this.form.get('carPick')).init();
-        
-        // console.log(<CostFormArray>this.form.get('carPick'));
-    
-        (<CostFormArray>this.form.get('carPick')).statusChanges.subscribe((status: string) => {
-            if (status === 'VALID') {
-                this.getOptions(this.form.value.carPick[3]);
-            }
-        });
+        //
     }
     
-    get styleDetails() {
-        return JSON.stringify(this._styleDetails);
+    add() {
+        this.cars.push({});
     }
     
-    submit() {
-        console.log(this.form);
+    delete(carToDelete: any) {
+        this.cars = this.cars.filter((car: any) => car != carToDelete);
     }
     
-    getOptions(id: string) {
-        this.service.getStyle(id).subscribe((data: any) => this._styleDetails = data);
+    setData(car: any, {value, submitted}: any) {
+        car.value = value;
+        car.submitted = submitted;
     }
+    
+    //private _updateCarsInLocalStorage() {
+    //    localStorage.setItem('costTableCars', JSON.stringify(this.cars));
+    //}
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { EdmundsService } from './edmunds.service';
-import { CostFormControl } from '../classes/cascade-form/cascade-form-control.class';
+import { CostCascadeFormControl } from '../classes/cascade-form/cascade-form-control.class';
 
 @Injectable()
 export class CostFormService {
@@ -12,7 +12,7 @@ export class CostFormService {
     }
     
     get getSource() {
-        return (control: CostFormControl) => {
+        return (control: CostCascadeFormControl) => {
             let sources = {
                 make: () => this.data.get('makes')
                     .map((data: any) => data.makes

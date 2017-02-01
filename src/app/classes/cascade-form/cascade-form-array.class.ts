@@ -5,14 +5,14 @@ import {
     AsyncValidatorFn
 } from '@angular/forms';
 
-import { CostFormControl } from './cascade-form-control.class';
+import { CostCascadeFormControl } from './cascade-form-control.class';
 
 @Injectable()
-export class CostFormArray extends FormArray {
+export class CostCascadeFormArray extends FormArray {
     
-    controls: CostFormControl[];
+    controls: CostCascadeFormControl[];
     
-    constructor(controls: CostFormControl[],
+    constructor(controls: CostCascadeFormControl[],
                 validator?: ValidatorFn,
                 asyncValidator?: AsyncValidatorFn) {
         super(controls, validator, asyncValidator);

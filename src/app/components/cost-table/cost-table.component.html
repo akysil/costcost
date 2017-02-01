@@ -1,39 +1,85 @@
-<form
-  [formGroup]="form"
-  novalidate
-  (ngSubmit)="submit()">
+Price | Performance | Posh
+<hr>
 
-    <fieldset formArrayName="carPick">
-        <template
-          ngFor
-          let-control
-          [ngForOf]="form.get('carPick')['controls']">
+<button (click)="add()">Add Car</button>
+<hr>
 
-            <label>{{control.label}}
-                <select formControlName="{{control.index}}">
-                    <option disabled selected hidden value="null">
-                        <span *ngIf="!control.options || control.options.length">Select</span>
-                        <span *ngIf="control.options && !control.options.length">Loading...</span>
-                    </option>
-                    <template ngFor let-option [ngForOf]="control.options">
-                        <option value="{{option.value}}">{{option.label}}</option>
-                    </template>
-                </select>
-            </label>
+<table *ngIf="cars.length">
+    <caption>Car comparision</caption>
+    <thead>
+    <tr>
+        <th></th>
+        <td *ngFor="let car of cars">
+            <button (click)="delete(car)">delete</button>
+        </td>
+    </tr>
+    <tr>
+        <th></th>
+        <td *ngFor="let car of cars">
+            <cost-cascade-form #cascadeForm></cost-cascade-form>
+            {{setData(car, cascadeForm)}}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th></th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['categories']['vehicleSize']}}
+                {{car.value['categories']['vehicleStyle']}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th>Price (MSRP)</th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['price']['baseMSRP']}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th>Transmission</th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['transmission']['transmissionType']}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th>Power (hp)</th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['engine']['horsepower']}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th>Fuel type</th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['engine']['type']}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th>MPG (city/highway)</th>
+        <td *ngFor="let car of cars">
+            <div *ngIf="car.submitted">
+                {{car.value['MPG']['city']}} /
+                {{car.value['MPG']['highway']}}
+            </div>
+        </td>
+    </tr>
+    </tbody>
+    <!--<tfoot>-->
+    <!--<tr>-->
+        <!--<td *ngFor="let car of cars">-->
+            <!--footer-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--</tfoot>-->
+</table>
 
-            <span
-              *ngIf="control.hasError('required') && control.touched">
-                <strong>{{control.label}}</strong> is required
-            </span>
-
-            <hr *ngIf="!control.last">
-        </template>
-    </fieldset>
-
-    <button type="submit" [disabled]="form.invalid || form.pristine">Submit</button>
-
-</form>
-
-<div>
-    {{styleDetails}}
-</div>
+<br><br><br>

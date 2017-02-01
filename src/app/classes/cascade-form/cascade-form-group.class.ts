@@ -7,7 +7,7 @@ import {
 
 
 @Injectable()
-export class CostFormGroup extends FormGroup {
+export class CostCascadeFormGroup extends FormGroup {
     
     constructor(controls: any,
                 validator?: ValidatorFn,

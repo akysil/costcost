@@ -4,20 +4,20 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/delay';
 
-import { CostFormControlOption, CostFormPattern, CostFormFormState } from '../../interfaces/cost-form.interface';
+import { CostCascadeFormControlOption, CostCascadeFormPattern, CostCascadeFormFormState } from '../../interfaces/cost-cascade-form.interface';
 
 @Injectable()
-export class CostFormControl extends FormControl {
+export class CostCascadeFormControl extends FormControl {
     
     private _label: string;
-    private _options: undefined | null | CostFormControlOption[];
-    private _optionsObserverFn: { (control: CostFormControl): Observable<any> };
+    private _options: undefined | null | CostCascadeFormControlOption[];
+    private _optionsObserverFn: { (control: CostCascadeFormControl): Observable<any> };
     private _delay: number;
-    private _defaultState: CostFormFormState;
+    private _defaultState: CostCascadeFormFormState;
     
-    constructor(individual: CostFormPattern = {}, dafault: CostFormPattern = {}) {
+    constructor(individual: CostCascadeFormPattern = {}, dafault: CostCascadeFormPattern = {}) {
         
-        const formState: CostFormFormState = {value: null, disabled: true, ...dafault.formState, ...individual.formState};
+        const formState: CostCascadeFormFormState = {value: null, disabled: true, ...dafault.formState, ...individual.formState};
         const validator = [].concat(dafault.validator).concat(individual.validator).filter(Boolean);
         const asyncValidator = [].concat(dafault.asyncValidator).concat(individual.asyncValidator).filter(Boolean);
         
@@ -27,7 +27,7 @@ export class CostFormControl extends FormControl {
         this._optionsObserverFn = individual.optionsObserverFn || dafault.optionsObserverFn ||
             ((control) =>
                 Observable.throw(`Source function for control "${control.label}" was not found!`));
-        this._delay = individual.delay || dafault.delay || 1000;
+        this._delay = individual.delay || dafault.delay || 0;
         this._defaultState = formState;
         
         this.statusChanges.subscribe(() => {
@@ -41,7 +41,7 @@ export class CostFormControl extends FormControl {
         
         this.resetAllDown();
         
-        const onNext = (options: CostFormControlOption[]) => {
+        const onNext = (options: CostCascadeFormControlOption[]) => {
             this.options = options;
             this.enable();
         };
@@ -59,17 +59,17 @@ export class CostFormControl extends FormControl {
         return this._label;
     };
     
-    get options(): CostFormControlOption[] {
+    get options(): CostCascadeFormControlOption[] {
         return this._options;
     }
     
-    set options(options: CostFormControlOption[]) {
+    set options(options: CostCascadeFormControlOption[]) {
         this._options = options;
     }
     
     get index(): number {
-        return (<Array<CostFormControl>>this.parent['controls'])
-            .findIndex((control: CostFormControl) => control === this);
+        return (<Array<CostCascadeFormControl>>this.parent['controls'])
+            .findIndex((control: CostCascadeFormControl) => control === this);
     }
     
     get first(): boolean {
@@ -80,19 +80,21 @@ export class CostFormControl extends FormControl {
         return (this.index + 1) === this.parent['controls']['length'];
     }
     
-    get next(): CostFormControl | null {
+    get next(): CostCascadeFormControl | null {
         if (this.last) return null;
         return this.parent['controls'][this.index + 1];
     }
     
-    get previous(): CostFormControl | null {
+    get previous(): CostCascadeFormControl | null {
         if (this.index === 0) return null;
         return this.parent['controls'][this.index - 1];
     }
     
     get resetAllDown() {
         return () => {
-            this.reset(this._defaultState);
+            if(this.value != this._defaultState.value || this.disabled != this._defaultState.disabled) {
+                this.reset(this._defaultState);
+            }
             if (!this.last) {
                 this.next.resetAllDown();
             }
