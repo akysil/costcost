@@ -11,11 +11,11 @@ export class EdmundsDefaultsService {
     };
     
     constructor() {
-        this.api_base = 'https://api.edmunds.com/api/vehicle/v2/';
+        this.api_base = 'https://api.edmunds.com/';
         this.params = {
             api_key: 'z6d9yj4dkf8kjmn46gttx7mv',
             fmt: 'json',
-            view: 'basic'
+            view: 'full'
         };
     }
 }

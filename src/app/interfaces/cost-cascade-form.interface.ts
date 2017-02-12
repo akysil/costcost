@@ -8,6 +8,7 @@ export interface CostCascadeFormOptionsObserverFn {
 
 export interface CostCascadeFormPattern {
     label?: string,
+    options?: CostCascadeFormControlOption[],
     optionsObserverFn?: CostCascadeFormOptionsObserverFn,
     validator?: ValidatorFn | ValidatorFn[],
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[],
@@ -20,7 +21,16 @@ export interface CostCascadeFormFormState {
     disabled?: boolean
 }
 
-export interface CostCascadeFormControlOption {
+export type CostCascadeFormControlOption = string | {
     label: string,
     value: string
+};
+
+export interface CostCascadeValue {
+    zip: string,
+    state: 'NEW' | 'USED',
+    make: string,
+    model: string,
+    year: string,
+    styleId: string
 }

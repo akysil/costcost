@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { Http, URLSearchParams, RequestOptions, Request, RequestMethod } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
@@ -21,15 +21,23 @@ export class EdmundsService {
             Observable.throw(urlPrefix) :
             Observable.create((observer: any) => {
                 
-                let local = localStorage.getItem(urlPrefix);
+                const search = this.searchParams(params);
+                const options = new RequestOptions({
+                    method: RequestMethod.Get,
+                    url: this.edmundsDefaults.api_base + urlPrefix,
+                    search
+                });
+                const request = new Request(options);
+                
+                let local = localStorage.getItem(request.url);
                 if (local) {
                     observer.next(JSON.parse(local));
                     observer.complete();
                 } else {
                     this.http
-                        .get(this.edmundsDefaults.api_base + urlPrefix, {search: this.searchParams(params)})
+                        .request(request)
                         .subscribe((response) => {
-                            localStorage.setItem(urlPrefix, JSON.stringify(response.json()));
+                            localStorage.setItem(request.url, JSON.stringify(response.json()));
                             observer.next(response.json());
                             observer.complete();
                         });
@@ -54,9 +62,13 @@ export class EdmundsService {
         function composePrefix(keys: any) {
             
             let pat = {
-                makes: `makes`,
-                style: `styles/${keys.id}`,
-                styles: `${keys.makeNiceName}/${keys.modelNiceName}/${keys.year}/styles`
+                makes: `api/vehicle/v2/makes`,
+                style: `api/vehicle/v2/styles/${keys.id}`,
+                styles: `api/vehicle/v2/${keys.makeNiceName}/${keys.modelNiceName}/${keys.year}/styles`,
+                equipment: `api/vehicle/v2/styles/${keys.styleId}/equipment`,
+                rating: `api/vehiclereviews/v2/styles/${keys.id}`,
+                tmv: `v1/api/tmv/tmvservice/calculatenewtmv?styleid=${keys.styleId}&zip=${keys.zip}`,
+                tco: `v1/api/tco/newtruecosttoownbystyleidandzip/${keys.styleId}/${keys.zip}`
             };
             
             return pat[query];

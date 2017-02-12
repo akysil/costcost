@@ -5,11 +5,13 @@ import { HttpModule } from '@angular/http';
 
 import { CostComponent } from './components/cost/cost.component';
 import { CostTableComponent } from './components/cost-table/cost-table.component';
-import {CostCascadeComponent} from './components/cost-cascade-form/cost-cascade-form.component'
+import { CostCascadeComponent } from './components/cost-cascade/cost-cascade.component';
 
 import { EdmundsService } from './services/edmunds.service';
 import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
 import { CostFormValidatorsService } from './services/cost-form-validators.service';
+import { CostCascadeService } from './services/cost-cascade.service';
+import { CostCarService } from './services/cost-car.service';
 
 @NgModule({
     declarations: [
@@ -25,7 +27,9 @@ import { CostFormValidatorsService } from './services/cost-form-validators.servi
     providers: [
         EdmundsService,
         EdmundsDefaultsService,
-        CostFormValidatorsService
+        CostCascadeService,
+        CostFormValidatorsService,
+        CostCarService
     ],
     bootstrap: [
         CostComponent

@@ -1,83 +1,94 @@
-Price | Performance | Posh
+Price | Performance | Prestige
 <hr>
 
 <button (click)="add()">Add Car</button>
 <hr>
 
-<table *ngIf="cars.length">
+<table *ngIf="items.length">
     <caption>Car comparision</caption>
     <thead>
     <tr>
         <th></th>
-        <td *ngFor="let car of cars">
-            <button (click)="delete(car)">delete</button>
+        <td *ngFor="let item of items">
+            <button (click)="delete(item)">delete</button>
         </td>
     </tr>
     <tr>
         <th></th>
-        <td *ngFor="let car of cars">
-            <cost-cascade-form #cascadeForm></cost-cascade-form>
-            {{setData(car, cascadeForm)}}
+        <td *ngFor="let item of items">
+            <cost-cascade-form
+              (submitChanges)="item.applySubmit($event)"
+              (valueChanges)="item.applyCredentials($event)">
+            </cost-cascade-form>
         </td>
     </tr>
     </thead>
     <tbody>
     <tr>
         <th></th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['categories']['vehicleSize']}}
-                {{car.value['categories']['vehicleStyle']}}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th>Price (MSRP)</th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['price']['baseMSRP']}}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th>Transmission</th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['transmission']['transmissionType']}}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th>Power (hp)</th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['engine']['horsepower']}}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th>Fuel type</th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['engine']['type']}}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th>MPG (city/highway)</th>
-        <td *ngFor="let car of cars">
-            <div *ngIf="car.submitted">
-                {{car.value['MPG']['city']}} /
-                {{car.value['MPG']['highway']}}
-            </div>
+        <td valign="top" *ngFor="let item of items">
+            <pre>{{item.options | json}}</pre>
         </td>
     </tr>
     </tbody>
+
+    <!--<tbody>-->
+    <!--<tr>-->
+    <!--<th></th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['categories']['vehicleSize']}}-->
+    <!--{{car.value['categories']['vehicleStyle']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<th>Price (MSRP)</th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['price']['baseMSRP']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<th>Transmission</th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['transmission']['transmissionType']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<th>Power (hp)</th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['engine']['horsepower']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<th>Fuel type</th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['engine']['type']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<th>MPG (city/highway)</th>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--<div *ngIf="car.submitted">-->
+    <!--{{car.value['MPG']['city']}} /-->
+    <!--{{car.value['MPG']['highway']}}-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
     <!--<tfoot>-->
     <!--<tr>-->
-        <!--<td *ngFor="let car of cars">-->
-            <!--footer-->
-        <!--</td>-->
+    <!--<td *ngFor="let car of items">-->
+    <!--footer-->
+    <!--</td>-->
     <!--</tr>-->
     <!--</tfoot>-->
 </table>

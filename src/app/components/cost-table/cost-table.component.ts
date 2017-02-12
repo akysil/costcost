@@ -1,37 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
+
+import { CostCar } from '../../classes/cost-car.class'
+import { CostCarService } from '../../services/cost-car.service';
 
 @Component({
-               selector: 'cost-table',
-               templateUrl: './cost-table.component.html',
-               styleUrls: ['./cost-table.component.scss']
-           })
-export class CostTableComponent implements OnInit {
+    selector: 'cost-table',
+    templateUrl: './cost-table.component.html',
+    styleUrls: ['./cost-table.component.scss']
+})
+export class CostTableComponent {
     
-    // private _carsFromStorage = localStorage.getItem('costTableCars');
+    items: CostCar[] = [];
     
-    cars: any[] = [];
-    
-    constructor() {
+    constructor(private costCarService: CostCarService) {
     }
     
-    ngOnInit() {
-        //
+    get add() {
+        return () =>
+            this.items.push(new CostCar(this.costCarService));
     }
     
-    add() {
-        this.cars.push({});
+    get delete() {
+        return (carToDelete: any) =>
+            this.items = this.items.filter((car: any) => car != carToDelete);
     }
-    
-    delete(carToDelete: any) {
-        this.cars = this.cars.filter((car: any) => car != carToDelete);
-    }
-    
-    setData(car: any, {value, submitted}: any) {
-        car.value = value;
-        car.submitted = submitted;
-    }
-    
-    //private _updateCarsInLocalStorage() {
-    //    localStorage.setItem('costTableCars', JSON.stringify(this.cars));
-    //}
 }

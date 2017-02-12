@@ -21,4 +21,12 @@ export class CostCascadeFormArray extends FormArray {
     init() {
         this.controls[0].init();
     }
+    
+    get valueObject() {
+        return this['controls']
+            .reduce((_value: any, {label, value}: any) => {
+                _value[label] = value;
+                return _value;
+            }, {});
+    }
 }

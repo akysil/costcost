@@ -69,7 +69,7 @@ describe('EdmundsService', () => {
     
     describe('get()', () => {
         
-        it('should return data on subscribe', async(() => {
+        it('should return equipment on subscribe', async(() => {
             
             mockBackend
                 .connections

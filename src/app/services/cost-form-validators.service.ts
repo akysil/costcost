@@ -13,8 +13,15 @@ export class CostFormValidatorsService {
         //
     }
     
-    hasDisabled: ValidatorFn = (input: CostCascadeFormArray) => {
-        let hasDisabled = !input.controls.every((control) => control.status != 'DISABLED');
-        return (hasDisabled) ? {hasDisabled} : null;
+    hasDisabled: ValidatorFn = (input: any) => {
+        const controls = input['controls'];
+        
+        const collection = (Array.isArray(controls))
+            ? controls
+            : Object.keys(controls).map((key: any) => controls[key]);
+        
+        return (collection.some((item: any) => item.status === 'DISABLED'))
+            ? {hasDisabled: true}
+            : null;
     };
 }
