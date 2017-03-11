@@ -68,7 +68,8 @@ export class EdmundsService {
                 equipment: `api/vehicle/v2/styles/${keys.styleId}/equipment`,
                 rating: `api/vehiclereviews/v2/styles/${keys.id}`,
                 tmv: `v1/api/tmv/tmvservice/calculatenewtmv?styleid=${keys.styleId}&zip=${keys.zip}`,
-                tco: `v1/api/tco/newtruecosttoownbystyleidandzip/${keys.styleId}/${keys.zip}`
+                tco: `v1/api/tco/newtruecosttoownbystyleidandzip/${keys.styleId}/${keys.zip}`,
+                safety: `api/vehicle/v2/styles/${keys.styleId}/safety`
             };
             
             return pat[query];

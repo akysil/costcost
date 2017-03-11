@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 
 @Injectable()
 export class HelpersService {
@@ -8,9 +7,19 @@ export class HelpersService {
         //
     }
     
-    setDynamicProperty = (formGroup: FormGroup, keys: string[], value: any): void => {
-        return (<any>keys.reduce((formGroup, key) => {
-            return (<any>formGroup.get(key));
-        }, formGroup).setValue(value, {onlySelf: true}));
-    };
+    static findInCollection(collection: any[], key: string, value?: string) {
+        return collection
+            .find((item: any) => {
+                return (value)
+                    ? Object(item)[key] === value
+                    : Object(item)[key];
+            });
+    }
+    
+    static findInEquipment(equipment: any[], name: string, attrName?: string) {
+        const item = HelpersService.findInCollection(equipment, 'name', name);
+        return (attrName) ?
+            HelpersService.findInCollection(item.attributes, 'name', attrName).value :
+            item;
+    }
 }

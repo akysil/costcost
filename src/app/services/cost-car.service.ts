@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 import { Observable } from 'rxjs';
 import { EdmundsService } from './edmunds.service';
+import { HelpersService as helpers } from './helpers.service';
 import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
+import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 
 @Injectable()
 export class CostCarService {
@@ -13,14 +14,20 @@ export class CostCarService {
     
     get getOptions() {
         return ({state, styleId, zip}: CostCascadeValue): Observable<CostCarOptions> => {
-            console.log(styleId);
+            // console.log(styleId);
             return Observable.merge(
                 this.getRating(styleId),
                 this.getTMV(state, styleId, zip),
                 this.getTCO(state, styleId, zip),
-                this.getWarranty(styleId)
+                this.getWarranty(styleId),
+                this.getEngine(styleId),
+                this.getTransmission(styleId),
+                this.getOffRoad(styleId),
+                this.getRoominess(styleId),
+                this.getComfort(styleId),
+                this.getSafety(styleId)
             );
-        }
+        };
     }
     
     get getStyle() {
@@ -40,6 +47,7 @@ export class CostCarService {
                 return this.data.get('tmv', {styleId, zip})
                     .map(({tmv: {offerPrice: tmv}}: any) => ({tmv}));
             }
+            return Observable.of();
         };
     }
     
@@ -47,8 +55,9 @@ export class CostCarService {
         return (state: string, styleId: string, zip: string): Observable<CostCarOptions> => {
             if (state === 'new') {
                 return this.data.get('tco', {styleId, zip})
-                    .map(({value}: any) => ({tco: value}) );
+                    .map(({value}: any) => ({tco: value}));
             }
+            return Observable.of();
         };
     }
     
@@ -58,28 +67,165 @@ export class CostCarService {
                 .map(composeWarranty);
             
             function composeWarranty({equipment}: any): CostCarOptions {
-                const warrantyArray = equipment.filter(({equipmentType}: any) => equipmentType === 'WARRANTY');
+                const warrantiesArray = equipment.filter(({equipmentType}: any) => equipmentType === 'WARRANTY');
                 return {
-                    warranty: warrantyArray.reduce((warranties: any, {attributes}: any) => {
-                        const type = findInCollection(attributes, 'Warranty Type').toLowerCase().replace(' ', '_');
-                        const mileage = findInCollection(attributes, 'Warranty Maximum Mileage');
-                        const years = findInCollection(attributes, 'Warranty Maximum Years');
-                        let warranty = warranties[type] = {};
-                        if (mileage) {
-                            warranty['mileage'] = mileage;
+                    warranty: warrantiesArray.reduce((warranty: any, {attributes}: any) => {
+                        const type = findInAttributes('Warranty Type').toLowerCase().replace(' ', '_');
+                        const mileage = findInAttributes('Warranty Maximum Mileage') || 'unlimited';
+                        const years = findInAttributes('Warranty Maximum Years') || 'unlimited';
+                        return {...{[type]: {mileage, years}}, ...warranty};
+                        
+                        function findInAttributes(query: string) {
+                            return Object(helpers.findInCollection(attributes, 'name', query)).value;
                         }
-                        if (years) {
-                            warranty['years'] = years;
-                        }
-                        return warranties;
                     }, {})
                 };
+            }
+        }
+    }
+    
+    get getEngine() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('equipment', {styleId}, {availability: 'standard'})
+                .map(composeEngine);
+            
+            function composeEngine({equipment}: any): CostCarOptions {
+                const horsepower = Number(findInEngine('horsepower'));
+                const torque = Number(findInEngine('torque'));
+                const weight = Number(findInEquipment('Specifications', 'Tco Curb Weight'));
                 
-                function findInCollection(attributes: any, query: string) {
-                    let filtered = attributes.filter(({name}: any) => name === query);
-                    return (filtered.length) ? filtered[0].value : null;
+                return {
+                    engine: {
+                        horsepowerToWeight: Math.round(horsepower / weight * 100000),
+                        torqueToWeight: Math.round(torque / weight * 100000),
+                        rpm: findInEngine('rpm'),
+                        type: findInEngine('type')
+                    }
+                };
+                
+                function findInEngine(query: string) {
+                    return helpers.findInCollection(equipment, 'equipmentType', 'ENGINE')[query];
+                }
+    
+                function findInEquipment(name: string, attrName?: string) {
+                    return helpers.findInEquipment(equipment, name, attrName);
                 }
             }
         }
     }
+    
+    get getTransmission() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('equipment', {styleId}, {availability: 'standard'})
+                .map(composeTransmission);
+            
+            function composeTransmission({equipment}: any): CostCarOptions {
+                
+                return {
+                    transmission: {
+                        type: findInTransmission('transmissionType'),
+                        numberOfSpeeds: Number(findInTransmission('numberOfSpeeds'))
+                    }
+                };
+                
+                function findInTransmission(query: string) {
+                    return helpers.findInCollection(equipment, 'equipmentType', 'TRANSMISSION')[query];
+                }
+            }
+        }
+    }
+    
+    get getOffRoad() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('equipment', {styleId}, {availability: 'standard'})
+                .map(composeOffRoad);
+            
+            function composeOffRoad({equipment}: any): CostCarOptions {
+                
+                const driveType = findInEquipment('Drive Type', 'Driven Wheels');
+                const groundClearance = Number(findInEquipment('Exterior Dimensions', 'Minimum Ground Clearance'));
+                
+                return {
+                    offRoad: {
+                        driveType,
+                        groundClearance
+                    }
+                };
+    
+                function findInEquipment(name: string, attrName?: string) {
+                    return helpers.findInEquipment(equipment, name, attrName);
+                }
+            }
+        }
+    }
+    
+    get getRoominess() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('equipment', {styleId}, {availability: 'standard'})
+                .map(composeRoominess);
+            
+            function composeRoominess({equipment}: any): CostCarOptions {
+    
+                const cargoCapacity = Number(findInEquipment('Cargo Dimensions', 'Cargo Capacity, All Seats In Place'));
+                const doorsNumber = Number(findInEquipment('Doors', 'Number Of Doors'));
+                const seatsNumber = findInEquipment('Seating Configuration').attributes
+                    .filter(({name}: any) => name.match(/Row Seating Capacity/i))
+                    .reduce((seats: number, item: any) => {
+                        return seats + Number(item.value);
+                    }, 0);
+                
+                return {
+                    roominess: {
+                        cargoCapacity,
+                        doorsNumber,
+                        seatsNumber
+                    }
+                };
+                
+                function findInEquipment(name: string, attrName?: string) {
+                    return helpers.findInEquipment(equipment, name, attrName);
+                }
+            }
+        }
+    }
+    
+    get getComfort() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('equipment', {styleId}, {availability: 'standard'})
+                .map(composeComfort);
+        
+            function composeComfort({equipment}: any): CostCarOptions {
+                
+                const seatUpholstery = findInEquipment('1st Row Seats', '1st Row Upholstery');
+                const steeringWheelTrim = findInEquipment('Steering Wheel', 'Steering Wheel Trim');
+                const legRoom1 = Number(findInEquipment('Interior Dimensions', '1st Row Leg Room'));
+                const legRoom2 = Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'));
+            
+                return {
+                    comfort: {
+                        seatUpholstery,
+                        steeringWheelTrim,
+                        legRoom1,
+                        legRoom2
+                    }
+                };
+    
+                function findInEquipment(name: string, attrName?: string) {
+                    return helpers.findInEquipment(equipment, name, attrName);
+                }
+            }
+        }
+    }
+    
+    get getSafety() {
+        return (styleId: string): Observable<CostCarOptions> => {
+            return this.data.get('safety', {styleId})
+                .map(composeSafety);
+        
+            function composeSafety(data: any): CostCarOptions {
+                return (data.nhtsa) ? {safety: {nhtsa: Number(data.nhtsa.overall)}} : null;
+            }
+        }
+    }
+    
 }
