@@ -1,8 +1,21 @@
-<h1>{{title}}</h1>
+<h1>CostCost</h1>
 
-Price | Performance | Prestige
-<hr>
+<section>
+    <cost-preferences
+      (valueChange)="scoring($event)">
+    </cost-preferences>
+</section>
 
-<cost-table></cost-table>
+<section>
+    <button (click)="add()">Add Car</button>
+    <div *ngFor="let car of cars">
+        <button (click)="delete(car)">Delete</button>
+        <cost-credentials (valueChanges)="car.applyCredentials($event)"></cost-credentials>
+    </div>
+</section>
+
+<section>
+    <cost-table [cars]="cars"></cost-table>
+</section>
 
 <footer>CostCost Inc.</footer>

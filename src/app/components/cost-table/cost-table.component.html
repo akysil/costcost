@@ -1,31 +1,32 @@
-<button (click)="add()">Add Car</button>
-<hr>
+<table *ngIf="cars.length" width="100%" border="1">
 
-<table *ngIf="items.length">
     <caption>Car comparision</caption>
-    <thead>
-    <tr>
-        <th></th>
-        <td *ngFor="let item of items">
-            <button (click)="delete(item)">delete</button>
-        </td>
-    </tr>
-    <tr>
-        <th></th>
-        <td *ngFor="let item of items">
-            <cost-cascade-form
-              (submitChanges)="item.applySubmit($event)"
-              (valueChanges)="item.applyCredentials($event)">
-            </cost-cascade-form>
-        </td>
-    </tr>
-    </thead>
+
+    <!--<thead>-->
+    <!--<tr>-->
+        <!--<th></th>-->
+        <!--<td *ngFor="let item of items">-->
+            <!--<button (click)="delete(item)">delete</button>-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+        <!--<th></th>-->
+        <!--<td *ngFor="let item of items">-->
+            <!--<cost-cascade-form-->
+              <!--(submitChanges)="item.applySubmit($event)"-->
+              <!--(valueChanges)="item.applyCredentials($event)">-->
+            <!--</cost-cascade-form>-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--</thead>-->
+
     <tbody>
-    <tr>
-        <th></th>
-        <td valign="top" *ngFor="let item of items">
-            <pre>{{item.options | json}}</pre>
-        </td>
+    <tr *ngFor="let car of cars">
+        <th>{{car.credentials.make}}</th>
+        <td>{{car.credentials.model}}</td>
+        <td>{{car.credentials.year}}</td>
+        <td>{{car.credentials.styleId}}</td>
+        <td>{{car.score}}</td>
     </tr>
     </tbody>
 
@@ -89,5 +90,3 @@
     <!--</tr>-->
     <!--</tfoot>-->
 </table>
-
-<br><br><br>

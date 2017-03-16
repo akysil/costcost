@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import {
     FormGroup,
     ValidatorFn,
@@ -14,7 +14,12 @@ export class CostCascadeFormGroup extends FormGroup {
     constructor(controls: any,
                 validator?: ValidatorFn,
                 asyncValidator?: AsyncValidatorFn) {
+        
         super(controls, validator, asyncValidator);
+        
+        this.valueChanges
+            .distinctUntilChanged((newVal:any, oldVal:any) => JSON.stringify(newVal) === JSON.stringify(oldVal))
+            .subscribe(() => this.flattenValueChanges.emit(this.flattenValue));
     }
     
     get flattenValue(): CostCascadeValue {
@@ -28,4 +33,6 @@ export class CostCascadeFormGroup extends FormGroup {
         }
         return flatten;
     }
+    
+    @Output() flattenValueChanges: EventEmitter<any> = new EventEmitter();
 }

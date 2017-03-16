@@ -1,60 +1,69 @@
 import { Injectable } from '@angular/core';
 import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 import { CostCarService } from '../services/cost-car.service';
-import { CostCascadeFormControlOption, CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
-
+import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 
 @Injectable()
 export class CostCar {
     
-    private _credentials: CostCascadeValue;
-    private _submitted: boolean = false;
-    private _ready: boolean = false;
+    private _credentials: CostCascadeValue = {};
+    private _properties: CostCarOptions = {};
+    private _score: number = 0;
+    private get  _credentialsAreValid() {
+        const {zip, state, styleId} = this._credentials;
+        return zip && state && styleId &&
+        Object.keys(this._credentials).every((key: any) => this._credentials[key]);
+    }
     
-    public options: CostCarOptions;
-        
     constructor(private costCarService: CostCarService) {
         // console.log(this);
     }
     
     get applyCredentials() {
         return (credentials: CostCascadeValue) => {
-    
-            this.reset();
-            
-            this._ready = false;
             this._credentials = credentials;
-            
-            if (!credentials) return;
-    
-            const onNext = (options: CostCarOptions) =>
-                this.options = {...(this.options || {}), ...options};
-            const onError = (e: any) =>
-                console.log(e);
-            const onComplete = () =>
-                this._ready = true;
-
-            this.costCarService
-                .getOptions(credentials)
-                .subscribe(onNext, onError, onComplete);
+            this.applyProperties(credentials);
         };
     }
     
-    get applySubmit() {
-        return (submitted: boolean) => this._submitted = submitted;
+    get applyProperties() {
+        return (credentials: CostCascadeValue) => {
+            
+            if (Object.keys(this._properties).length) {
+                this._properties = {};
+            }
+            
+            if (this._credentialsAreValid) {
+                
+                const onNext = (options: CostCarOptions) =>
+                    this._properties = {...this._properties, ...options};
+                const onError = (e: any) =>
+                    console.log(e);
+                const onComplete = () =>
+                    this.applyScore();
+                
+                this.costCarService
+                    .getOptions(credentials)
+                    .subscribe(onNext, onError, onComplete);
+            }
+        };
     }
     
-    get reset() {
+    get applyScore() {
         return () => {
-            return delete this.options;
-        }
+            return this._score = +new Date();
+        };
     }
     
-    get submitted() {
-        return this._submitted;
+    get credentials() {
+        return this._credentials;
     }
     
-    get ready() {
-        return this._ready;
+    get properties() {
+        return this._properties;
+    }
+    
+    get score() {
+        return this._score;
     }
 }

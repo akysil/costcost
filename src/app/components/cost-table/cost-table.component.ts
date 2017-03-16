@@ -1,7 +1,7 @@
-import { Component} from '@angular/core';
-
-import { CostCar } from '../../classes/cost-car.class'
-import { CostCarService } from '../../services/cost-car.service';
+import {
+    Component,
+    Input
+} from '@angular/core';
 
 @Component({
     selector: 'cost-table',
@@ -10,18 +10,8 @@ import { CostCarService } from '../../services/cost-car.service';
 })
 export class CostTableComponent {
     
-    items: CostCar[] = [];
+    @Input() cars: any;
     
-    constructor(private costCarService: CostCarService) {
-    }
-    
-    get add() {
-        return () =>
-            this.items.push(new CostCar(this.costCarService));
-    }
-    
-    get delete() {
-        return (carToDelete: any) =>
-            this.items = this.items.filter((car: any) => car != carToDelete);
+    constructor() {
     }
 }

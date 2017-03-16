@@ -27,10 +27,10 @@ export type CostCascadeFormControlOption = string | {
 };
 
 export interface CostCascadeValue {
-    zip: string,
-    state: 'NEW' | 'USED',
-    make: string,
-    model: string,
-    year: string,
-    styleId: string
+    zip?: string,
+    state?: 'new' | 'used',
+    make?: string,
+    model?: string,
+    year?: string,
+    styleId?: string
 }

@@ -52,7 +52,7 @@ export class CostCascadeFormControl extends FormControl {
         
         const onNext = (options: CostCascadeFormControlOption[]) => {
             this._options = options;
-            this.enable();
+            this.enable(); // bug: invoke value changes twice
         };
         const onError = (e: Error) => {
             console.log(e);
@@ -65,7 +65,10 @@ export class CostCascadeFormControl extends FormControl {
     }
     
     reset() {
-        super.reset(this._defaultState);
+        if (this.value != this._defaultState.value ||
+            this.disabled != this._defaultState.disabled) {
+            super.reset(this._defaultState);
+        }
         this._options = null;
     }
     
