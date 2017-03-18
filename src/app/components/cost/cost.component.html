@@ -2,14 +2,15 @@
 
 <section>
     <cost-preferences
-      (valueChange)="scoring($event)">
+      (valueChange)="applyScore($event)">
     </cost-preferences>
 </section>
 
+<button (click)="add()">Add Car</button>
+
 <section>
-    <button (click)="add()">Add Car</button>
     <div *ngFor="let car of cars">
-        <button (click)="delete(car)">Delete</button>
+        <button (click)="remove(car)">Delete</button>
         <cost-credentials (valueChanges)="car.applyCredentials($event)"></cost-credentials>
     </div>
 </section>

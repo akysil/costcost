@@ -22,4 +22,8 @@ export class HelpersService {
             HelpersService.findInCollection(item.attributes, 'name', attrName).value :
             item;
     }
+    
+    static resetObject(object: any) {
+        return (Object.keys(object).length) ? {} : object;
+    }
 }

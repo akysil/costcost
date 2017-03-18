@@ -21,7 +21,7 @@
     <!--</thead>-->
 
     <tbody>
-    <tr *ngFor="let car of cars">
+    <tr *ngFor="let car of cars | orderBy : ['timeStamp', '-score']">
         <th>{{car.credentials.make}}</th>
         <td>{{car.credentials.model}}</td>
         <td>{{car.credentials.year}}</td>

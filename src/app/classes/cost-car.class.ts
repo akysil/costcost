@@ -6,21 +6,40 @@ import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 @Injectable()
 export class CostCar {
     
-    private _credentials: CostCascadeValue = {};
-    private _properties: CostCarOptions = {};
-    private _score: number = 0;
-    private get  _credentialsAreValid() {
+    public timeStamp: number;
+    public score: number; // TODO: apply getter and setter
+    
+    private _credentials: CostCascadeValue;
+    private _properties: CostCarOptions;
+    private _ready: boolean;
+    
+    private get _credentialsAreValid() {
         const {zip, state, styleId} = this._credentials;
         return zip && state && styleId &&
-        Object.keys(this._credentials).every((key: any) => this._credentials[key]);
+            Object.keys(this._credentials).every((key: any) => this._credentials[key]);
     }
     
-    constructor(private costCarService: CostCarService) {
-        // console.log(this);
+    private _reset() {
+        this.score = 0;
+        this._credentials = {};
+        this._properties = {};
+        this._ready = false;
+    }
+    
+    private _updateScore() {
+        this._ready = true;
+        this._applyScore();
+    }
+    
+    constructor(private _costCarService: CostCarService, private _applyScore: any) {
+        this.timeStamp = +new Date();
+        this._reset();
     }
     
     get applyCredentials() {
         return (credentials: CostCascadeValue) => {
+            
+            this._reset();
             this._credentials = credentials;
             this.applyProperties(credentials);
         };
@@ -29,10 +48,6 @@ export class CostCar {
     get applyProperties() {
         return (credentials: CostCascadeValue) => {
             
-            if (Object.keys(this._properties).length) {
-                this._properties = {};
-            }
-            
             if (this._credentialsAreValid) {
                 
                 const onNext = (options: CostCarOptions) =>
@@ -40,18 +55,12 @@ export class CostCar {
                 const onError = (e: any) =>
                     console.log(e);
                 const onComplete = () =>
-                    this.applyScore();
+                    this._updateScore();
                 
-                this.costCarService
+                this._costCarService
                     .getOptions(credentials)
                     .subscribe(onNext, onError, onComplete);
             }
-        };
-    }
-    
-    get applyScore() {
-        return () => {
-            return this._score = +new Date();
         };
     }
     
@@ -63,7 +72,7 @@ export class CostCar {
         return this._properties;
     }
     
-    get score() {
-        return this._score;
+    get ready() {
+        return this._ready;
     }
 }

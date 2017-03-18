@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CostCar } from '../../classes/cost-car.class';
 import { CostCarService } from '../../services/cost-car.service';
+import { CostScoreService } from '../../services/cost-score.service';
 
 @Component({
     selector: 'cost',
@@ -9,31 +10,22 @@ import { CostCarService } from '../../services/cost-car.service';
 })
 export class CostComponent {
     
-    constructor(private costCarService: CostCarService) {
+    constructor(private costCarService: CostCarService, private costScoreService: CostScoreService) {
     }
     
-    someValue: any = {
-        init: null
+    public cars: any[] = [];
+    
+    public applyScore = () => {
+        this.cars = [...this.costScoreService.setScore(this.cars)];
     };
     
-    cars: any[] = [];
-    
-    //get add() {
-    //    return () => (this.cars.length < 5) &&
-    //    this.cars.push({});
-    //}
-    
-    get add() {
-        return () => (this.cars.length < 5) &&
-        this.cars.push(new CostCar(this.costCarService));
+    add() {
+        this.cars = (this.cars.length < 5) ?
+            [...this.cars, new CostCar(this.costCarService, this.applyScore)] :
+            this.cars;
     }
     
-    get delete() {
-        return (carToDelete: any) =>
-            this.cars = this.cars.filter((car: any) => car != carToDelete);
-    }
-    
-    scoring(e: any) {
-        console.log(e);
+    remove(carToRemove: any) {
+        this.cars = this.cars.filter((car: any) => car != carToRemove);
     }
 }
