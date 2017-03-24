@@ -13,7 +13,10 @@
     "noImplicitAny": true,
         "suppressImplicitAnyIndexErrors": true
     },
-    "files": [
-        "**/*"
+    "include": [
+        "*"
+    ],
+    "exclude": [
+        "*aot.ts"
     ]
 }
