@@ -1,22 +1,7 @@
 <h1>CostCost</h1>
 
-<section>
-    <cost-preferences
-      (valueChange)="applyScore($event)">
-    </cost-preferences>
-</section>
-
-<button (click)="add()">Add Car</button>
-
-<section>
-    <div *ngFor="let car of cars">
-        <button (click)="remove(car)">Delete</button>
-        <cost-credentials (valueChanges)="car.applyCredentials($event)"></cost-credentials>
-    </div>
-</section>
-
-<section>
-    <cost-table [cars]="cars"></cost-table>
-</section>
+<cost-preferences (valueChange)="dataIn.emit({preferences: $event})"></cost-preferences>
+<cost-credentials (valueChanges)="dataIn.emit({credentials: $event})"></cost-credentials>
+<cost-table [cars]="[]" [data]="dataOut"></cost-table>
 
 <footer>CostCost Inc.</footer>

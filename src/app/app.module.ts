@@ -7,6 +7,7 @@ import { CostComponent } from './components/cost/cost.component';
 import { CostTableComponent } from './components/cost-table/cost-table.component';
 import { CostPreferencesComponent } from './components/cost-preferences/cost-preferences.component';
 import { CostCredentialsComponent } from './components/cost-credentials/cost-credentials.component';
+import { CostCredentialComponent } from './components/cost-credential/cost-credentials.component';
 
 import { EdmundsService } from './services/edmunds.service';
 import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
@@ -14,6 +15,7 @@ import { CostFormValidatorsService } from './services/cost-form-validators.servi
 import { CostCascadeService } from './services/cost-cascade.service';
 import { CostCarService } from './services/cost-car.service';
 import { CostScoreService } from './services/cost-score.service';
+
 import { CostOrderBy } from './pipes/cost-order-by.pipe';
 
 @NgModule({
@@ -21,6 +23,7 @@ import { CostOrderBy } from './pipes/cost-order-by.pipe';
         CostComponent,
         CostPreferencesComponent,
         CostCredentialsComponent,
+        CostCredentialComponent,
         CostTableComponent,
         CostOrderBy
     ],

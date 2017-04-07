@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { CostTableComponent } from './cost-table.component';
 
 import { EdmundsService } from '../../services/edmunds.service';
-import { HelpersService } from '../../services/helpers.service';
+import { _u } from '../../services/cost-utilities.service';
 
 describe('CostTableComponent', () => {
     
@@ -31,7 +31,7 @@ describe('CostTableComponent', () => {
                         }
                     }
                 },
-                HelpersService
+                _u
             ],
             imports: [ReactiveFormsModule]
         });

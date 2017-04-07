@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EdmundsService } from './edmunds.service';
-import { HelpersService as helpers } from './helpers.service';
+import { _u } from './cost-utilities.service';
 import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 
@@ -12,21 +12,55 @@ export class CostCarService {
         //
     }
     
+    get hasCredentials() {
+        return (data: any) => _u.isObject(data) &&
+        _u.isArray(data.credentials) &&
+        data.credentials.length;
+    }
+    
+    get setCars() {
+        return (data: any) => (this.hasCredentials(data)) ?
+            Observable.of(data)
+                .map(({credentials, ...rest}: any) => {
+                    const cars = credentials.map((c: any) => ({credentials: c}));
+                    return {cars, ...rest};
+                }) :
+            Observable.of(data);
+    }
+    
+    get hasCars() {
+        return (data: any) => _u.isArray(_u.get(data, 'cars'));
+    }
+    
+    get setProperties() {
+        return (data: any) => (this.hasCars(data)) ?
+            Observable.from(data.cars)
+                .mergeMap(this.getOptions)
+                .toArray()
+                .map((cars: any) => ({...data, cars})) :
+            Observable.of(data);
+    }
+    
     get getOptions() {
-        return ({state, styleId, zip}: CostCascadeValue): Observable<CostCarOptions> => {
-            // console.log(styleId);
-            return Observable.merge(
-                this.getRating(styleId),
-                this.getTMV(state, styleId, zip),
-                this.getTCO(state, styleId, zip),
-                this.getWarranty(styleId),
-                this.getEngine(styleId),
-                this.getTransmission(styleId),
-                this.getOffRoad(styleId),
-                this.getRoominess(styleId),
-                this.getComfort(styleId),
-                this.getSafety(styleId)
-            );
+        return (car: any): Observable<any> => {
+            
+            const {state, styleId, zip} = <CostCascadeValue>car.credentials;
+            
+            return (state && styleId && zip) ? Observable.merge(
+                    this.getRating(styleId),
+                    this.getTMV(state, styleId, zip),
+                    this.getTCO(state, styleId, zip),
+                    this.getWarranty(styleId),
+                    this.getEngine(styleId),
+                    this.getTransmission(styleId),
+                    this.getOffRoad(styleId),
+                    this.getRoominess(styleId),
+                    this.getComfort(styleId),
+                    this.getSafety(styleId)
+                )
+                .reduce(_u.assign)
+                .map((properties: any) => ({properties, ...car})) :
+                Observable.of(car);
         };
     }
     
@@ -76,7 +110,7 @@ export class CostCarService {
                         return {...{[type]: {mileage, years}}, ...warranty};
                         
                         function findInAttributes(query: string) {
-                            return Object(helpers.findInCollection(attributes, 'name', query)).value;
+                            return Object(_u.findInCollection(attributes, 'name', query)).value;
                         }
                     }, {})
                 };
@@ -85,7 +119,7 @@ export class CostCarService {
     }
     
     get getEngine() {
-        return (styleId: string): Observable<CostCarOptions> => {
+        return (styleId: string): Observable<any> => {
             return this.data.get('equipment', {styleId}, {availability: 'standard'})
                 .map(composeEngine);
             
@@ -104,11 +138,11 @@ export class CostCarService {
                 };
                 
                 function findInEngine(query: string) {
-                    return helpers.findInCollection(equipment, 'equipmentType', 'ENGINE')[query];
+                    return _u.findInCollection(equipment, 'equipmentType', 'ENGINE')[query];
                 }
-    
+                
                 function findInEquipment(name: string, attrName?: string) {
-                    return helpers.findInEquipment(equipment, name, attrName);
+                    return _u.findInEquipment(equipment, name, attrName);
                 }
             }
         }
@@ -129,7 +163,7 @@ export class CostCarService {
                 };
                 
                 function findInTransmission(query: string) {
-                    return helpers.findInCollection(equipment, 'equipmentType', 'TRANSMISSION')[query];
+                    return _u.findInCollection(equipment, 'equipmentType', 'TRANSMISSION')[query];
                 }
             }
         }
@@ -151,9 +185,9 @@ export class CostCarService {
                         groundClearance
                     }
                 };
-    
+                
                 function findInEquipment(name: string, attrName?: string) {
-                    return helpers.findInEquipment(equipment, name, attrName);
+                    return _u.findInEquipment(equipment, name, attrName);
                 }
             }
         }
@@ -165,7 +199,7 @@ export class CostCarService {
                 .map(composeRoominess);
             
             function composeRoominess({equipment}: any): CostCarOptions {
-    
+                
                 const cargoCapacity = Number(findInEquipment('Cargo Dimensions', 'Cargo Capacity, All Seats In Place'));
                 const doorsNumber = Number(findInEquipment('Doors', 'Number Of Doors'));
                 const seatsNumber = findInEquipment('Seating Configuration').attributes
@@ -183,7 +217,7 @@ export class CostCarService {
                 };
                 
                 function findInEquipment(name: string, attrName?: string) {
-                    return helpers.findInEquipment(equipment, name, attrName);
+                    return _u.findInEquipment(equipment, name, attrName);
                 }
             }
         }
@@ -193,14 +227,14 @@ export class CostCarService {
         return (styleId: string): Observable<CostCarOptions> => {
             return this.data.get('equipment', {styleId}, {availability: 'standard'})
                 .map(composeComfort);
-        
+            
             function composeComfort({equipment}: any): CostCarOptions {
                 
                 const seatUpholstery = findInEquipment('1st Row Seats', '1st Row Upholstery');
                 const steeringWheelTrim = findInEquipment('Steering Wheel', 'Steering Wheel Trim');
                 const legRoom1 = Number(findInEquipment('Interior Dimensions', '1st Row Leg Room'));
                 const legRoom2 = Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'));
-            
+                
                 return {
                     comfort: {
                         seatUpholstery,
@@ -209,9 +243,9 @@ export class CostCarService {
                         legRoom2
                     }
                 };
-    
+                
                 function findInEquipment(name: string, attrName?: string) {
-                    return helpers.findInEquipment(equipment, name, attrName);
+                    return _u.findInEquipment(equipment, name, attrName);
                 }
             }
         }
@@ -221,7 +255,7 @@ export class CostCarService {
         return (styleId: string): Observable<CostCarOptions> => {
             return this.data.get('safety', {styleId})
                 .map(composeSafety);
-        
+            
             function composeSafety(data: any): CostCarOptions {
                 return (data.nhtsa) ? {safety: {nhtsa: Number(data.nhtsa.overall)}} : null;
             }

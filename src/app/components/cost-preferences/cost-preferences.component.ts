@@ -7,37 +7,26 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class CostPreferencesComponent implements OnInit {
     
-    constructor() {
-        // console.log(this);
-    }
+    constructor() {}
     
-    inputOptions: any;
-    optionsForm: FormGroup;
-    preferenceValue: any;
+    defaults: any;
+    form: FormGroup;
     
     ngOnInit() {
         
-        this.inputOptions = {
+        this.defaults = {
             type: 'range',
             min: '1',
             max: '100'
         };
         
-        this.optionsForm = new FormGroup({
+        this.form = new FormGroup({
             performance: new FormControl('1'),
             prestige: new FormControl('1'),
             price: new FormControl('1'),
         });
         
-        this.optionsForm.valueChanges.subscribe((value: any) => {
-            this.preferenceValue = value;
-            this.valueChange.emit(this.preferenceValue);
-        });
-    }
-    
-    @Input()
-    get value() {
-        return this.preferenceValue;
+        this.form.valueChanges.subscribe((value: any) => this.valueChange.emit(value));
     }
     
     @Output() valueChange: EventEmitter<any> = new EventEmitter();

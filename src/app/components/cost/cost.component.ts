@@ -1,31 +1,32 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CostCar } from '../../classes/cost-car.class';
 import { CostCarService } from '../../services/cost-car.service';
 import { CostScoreService } from '../../services/cost-score.service';
+import { Observable } from 'rxjs';
+import { _u } from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost',
     templateUrl: './cost.component.html',
     styleUrls: ['./cost.component.scss']
 })
-export class CostComponent {
+export class CostComponent implements OnInit {
     
-    constructor(private costCarService: CostCarService, private costScoreService: CostScoreService) {
+    public dataIn: EventEmitter<any> = new EventEmitter();
+    public dataOut: Observable<any>;
+    
+    constructor(private costCarService: CostCarService,
+        private costScoreService: CostScoreService) {
+    
     }
     
-    public cars: any[] = [];
-    
-    public applyScore = () => {
-        this.cars = [...this.costScoreService.setScore(this.cars)];
-    };
-    
-    add() {
-        this.cars = (this.cars.length < 5) ?
-            [...this.cars, new CostCar(this.costCarService, this.applyScore)] :
-            this.cars;
-    }
-    
-    remove(carToRemove: any) {
-        this.cars = this.cars.filter((car: any) => car != carToRemove);
+    ngOnInit() {
+        this.dataOut = this.dataIn
+            .mergeMap(this.costCarService.setCars)
+            .mergeMap(this.costCarService.setProperties)
+            .scan(_u.assign)
+            .mergeMap(this.costScoreService.setScore2)
+            .distinctUntilChanged(null, _u.stringify)
+            .startWith({});
     }
 }

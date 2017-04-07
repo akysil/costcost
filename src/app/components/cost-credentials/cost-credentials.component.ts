@@ -4,18 +4,6 @@ import {
     OnInit,
     Output
 } from '@angular/core';
-import {
-    Validators,
-    FormControl
-} from '@angular/forms';
-
-import {
-    CostCascadeFormGroup,
-    CostCascadeFormArray,
-    CostCascadeFormControl
-} from '../../classes/cascade-form';
-import { CostCascadeService } from '../../services/cost-cascade.service';
-import { CostFormValidatorsService } from '../../services/cost-form-validators.service';
 
 @Component({
     selector: 'cost-credentials',
@@ -24,45 +12,30 @@ import { CostFormValidatorsService } from '../../services/cost-form-validators.s
 })
 export class CostCredentialsComponent implements OnInit {
     
-    private form: CostCascadeFormGroup;
+    credentials: any[] = [];
     
-    constructor(private service: CostCascadeService,
-        private validators: CostFormValidatorsService) {
+    constructor() {}
+    
+    ngOnInit() {}
+    
+    add() {
+        if (this.credentials.length > 4) return;
+        this.credentials.push({});
+        this.emit();
     }
     
-    ngOnInit() {
-        
-        this.form =
-            new CostCascadeFormGroup({
-                zip: new FormControl('', [
-                    Validators.required,
-                    Validators.minLength(5),
-                    Validators.maxLength(5),
-                    Validators.pattern(/\d/g)
-                ]),
-                cascade: new CostCascadeFormArray(
-                    [
-                        {
-                            label: 'state',
-                            options: ['new', 'used']
-                        }, 'make', 'model', 'year', 'styleId']
-                        .map((controlOptions) => {
-                            return new CostCascadeFormControl(controlOptions, {
-                                optionsObserverFn: this.service.getSource,
-                                validator: Validators.required
-                            })
-                        }),
-                    this.validators.hasDisabled
-                )
-            }, this.validators.hasDisabled);
-        
-        (<CostCascadeFormArray>this.form.get('cascade')).init();
-        
-        this.form
-            .flattenValueChanges
-            .subscribe((flattenValue: any) => this.valueChanges.emit(flattenValue));
-        
-        this.form.get('zip').setValue('98087');
+    remove(i: number) {
+        this.credentials.splice(i, 1);
+        this.emit();
+    }
+    
+    applyCredential(i: number, data: any) {
+        Object.assign(this.credentials[i], data);
+        this.emit();
+    }
+    
+    emit() {
+        this.valueChanges.emit(this.credentials);
     }
     
     @Output() valueChanges: EventEmitter<any> = new EventEmitter();

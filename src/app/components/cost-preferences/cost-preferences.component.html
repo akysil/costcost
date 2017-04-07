@@ -1,24 +1,21 @@
-<form
-  [formGroup]="optionsForm"
-  novalidate
-  (ngSubmit)="submit()">
+<form [formGroup]="form" novalidate>
 
     <label>
         Performance
-        <input type="{{inputOptions.type}}" min="{{inputOptions.min}}" max="{{inputOptions.max}}" formControlName="performance">
-        {{optionsForm.get('performance').value}}
+        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="performance">
+        {{form.get('performance').value}}
     </label>
 <br>
     <label>
         Prestige
-        <input type="{{inputOptions.type}}" min="{{inputOptions.min}}" max="{{inputOptions.max}}" formControlName="prestige">
-        {{optionsForm.get('prestige').value}}
+        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="prestige">
+        {{form.get('prestige').value}}
     </label>
 <br>
     <label>
         Price
-        <input type="{{inputOptions.type}}" min="{{inputOptions.min}}" max="{{inputOptions.max}}" formControlName="price">
-        {{optionsForm.get('price').value}}
+        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="price">
+        {{form.get('price').value}}
     </label>
 
 </form>
