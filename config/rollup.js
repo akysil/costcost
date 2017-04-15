@@ -13,7 +13,10 @@ export default {
     plugins: [
         nodeResolve({jsnext: true, module: true}),
         commonjs({ // convert CommonJS modules to ES6
-            include: 'node_modules/rxjs/**', // the only lib not in typescript
+            include: [
+                'node_modules/rxjs/**',
+                'node_modules/lodash/**'
+            ],
         }),
         uglify(),
         filesize(),
