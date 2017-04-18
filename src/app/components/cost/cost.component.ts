@@ -1,9 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { CostCar } from '../../classes/cost-car.class';
 import { CostCarService } from '../../services/cost-car.service';
 import { CostScoreService } from '../../services/cost-score.service';
 import { Observable } from 'rxjs';
-import { _u } from '../../services/cost-utilities.service';
+import _u from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost',
@@ -15,17 +14,17 @@ export class CostComponent implements OnInit {
     public dataIn: EventEmitter<any> = new EventEmitter();
     public dataOut: Observable<any>;
     
-    constructor(private costCarService: CostCarService,
+    constructor(private carService: CostCarService,
         private costScoreService: CostScoreService) {
     
     }
     
     ngOnInit() {
         this.dataOut = this.dataIn
-            .mergeMap(this.costCarService.setCars)
-            .mergeMap(this.costCarService.setProperties)
+            .mergeMap(this.carService.convertCredentialsToCars)
+            .mergeMap(this.carService.getProperties)
+            .mergeMap(this.costScoreService.getScore)
             .scan(_u.assign)
-            .mergeMap(this.costScoreService.setScore2)
             .distinctUntilChanged(null, _u.stringify)
             .startWith({});
     }

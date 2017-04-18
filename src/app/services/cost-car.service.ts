@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EdmundsService } from './edmunds.service';
-import { _u } from './cost-utilities.service';
+import _u from './cost-utilities.service';
 import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 
@@ -12,14 +12,8 @@ export class CostCarService {
         //
     }
     
-    get hasCredentials() {
-        return (data: any) => _u.isObject(data) &&
-        _u.isArray(data.credentials) &&
-        data.credentials.length;
-    }
-    
-    get setCars() {
-        return (data: any) => (this.hasCredentials(data)) ?
+    get convertCredentialsToCars() {
+        return (data: any) => _u.get(data, 'credentials.length') ?
             Observable.of(data)
                 .map(({credentials, ...rest}: any) => {
                     const cars = credentials.map((c: any) => ({credentials: c}));
@@ -28,12 +22,8 @@ export class CostCarService {
             Observable.of(data);
     }
     
-    get hasCars() {
-        return (data: any) => _u.isArray(_u.get(data, 'cars'));
-    }
-    
-    get setProperties() {
-        return (data: any) => (this.hasCars(data)) ?
+    get getProperties() {
+        return (data: any) => _u.get(data, 'cars.length') ?
             Observable.from(data.cars)
                 .mergeMap(this.getOptions)
                 .toArray()
