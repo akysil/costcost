@@ -1,96 +1,18 @@
-<table *ngIf="cars.length" width="100%" border="1">
-
-    <caption>Car comparision</caption>
-
-    <!--<thead>-->
-    <!--<tr>-->
-        <!--<th></th>-->
-        <!--<td *ngFor="let item of items">-->
-            <!--<button (click)="delete(item)">delete</button>-->
-        <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-        <!--<th></th>-->
-        <!--<td *ngFor="let item of items">-->
-            <!--<cost-cascade-form-->
-              <!--(submitChanges)="item.applySubmit($event)"-->
-              <!--(valueChanges)="item.applyCredentials($event)">-->
-            <!--</cost-cascade-form>-->
-        <!--</td>-->
-    <!--</tr>-->
-    <!--</thead>-->
-
-    <tbody>
-    <tr *ngFor="let car of cars | orderBy : ['timeStamp', '-score']">
-        <th>{{car.credentials.make}}</th>
+<table border="1">
+    <tr *ngFor="let car of cars | async ">
+        <td>{{car.credentials.make}}</td>
         <td>{{car.credentials.model}}</td>
-        <td>{{car.credentials.year}}</td>
-        <td>{{car.credentials.styleId}}</td>
-        <td>{{car.score}}</td>
-    </tr>
-    </tbody>
+        <ng-template ngFor let-property [ngForOf]="values(car.properties) || ['','','','','','','','','','']">
+            <td>
+                <small>{{property.value | json}}</small>
+            </td>
+        </ng-template>
 
-    <!--<tbody>-->
-    <!--<tr>-->
-    <!--<th></th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['categories']['vehicleSize']}}-->
-    <!--{{car.value['categories']['vehicleStyle']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-    <!--<th>Price (MSRP)</th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['price']['baseMSRP']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-    <!--<th>Transmission</th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['transmission']['transmissionType']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-    <!--<th>Power (hp)</th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['engine']['horsepower']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-    <!--<th>Fuel type</th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['engine']['type']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--<tr>-->
-    <!--<th>MPG (city/highway)</th>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--<div *ngIf="car.submitted">-->
-    <!--{{car.value['MPG']['city']}} /-->
-    <!--{{car.value['MPG']['highway']}}-->
-    <!--</div>-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
-    <!--<tfoot>-->
-    <!--<tr>-->
-    <!--<td *ngFor="let car of items">-->
-    <!--footer-->
-    <!--</td>-->
-    <!--</tr>-->
-    <!--</tfoot>-->
+    </tr>
 </table>
 
-<pre>
-   {{cars2 | async | json}}
-</pre>
+<!--<hr>-->
+
+<!--<pre>-->
+   <!--{{cars | async | json}}-->
+<!--</pre>-->

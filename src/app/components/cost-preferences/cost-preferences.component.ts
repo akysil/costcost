@@ -26,8 +26,8 @@ export class CostPreferencesComponent implements OnInit {
             price: new FormControl('1'),
         });
         
-        this.form.valueChanges.subscribe((value: any) => this.valueChange.emit(value));
+        this.form.valueChanges.subscribe((value: any) => this.valueChanges.emit(value));
     }
     
-    @Output() valueChange: EventEmitter<any> = new EventEmitter();
+    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
 }

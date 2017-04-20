@@ -8,14 +8,8 @@ export class CostScoreService {
     constructor() {
     }
     
-    private get _readyForScore() {
-        return (cars: any) => {
-            return _u.isArray(cars) && _u.filter(cars, 'properties').length > 1;
-        };
-    }
-    
     public get getScore() {
-        return (data: any) => (this._readyForScore(data.cars)) ?
+        return (data: any) => (_u.filter(data.cars, 'properties').length > 1) ?
             Observable.of(data)
                 .mergeMap((data: any) => this._setScore(data.cars))
                 .map((cars: any[]) => _u.set(data, 'cars', cars)) :
@@ -54,7 +48,9 @@ export class CostScoreService {
     
     private get _propertyScores() {
         return ({key, value}: any) => {
-            return Observable.of({key, value: _u.fill(value, 0)});
+            return Observable.of({
+                key,
+                value: (this[`_${key}`]) ? this[`_${key}`](value) : _u.fill(value, 0)});
         };
     }
     
@@ -64,6 +60,23 @@ export class CostScoreService {
     
     private _tmv(props: number[]) {
         return this._simpleNumbers(props);
+    }
+    
+    private _warranty(props: any[]) {
+        // TODO:
+        // 1. multiplier: number of car's warranties
+        // 2. war. to war. ratio
+        // 3. car to car ratio (by equivalent warranties)
+        // 4. apply multiplier
+        
+        const res = Observable.from(_u.keys(_u.head(props)))
+            .map((key: string) => {
+                if(_u.every()) {
+                    //
+                }
+            });
+        
+        return this._simpleNumbers(_u.map(props, () => Math.random()));
     }
     
     private _simpleNumbers(props: number[]) {

@@ -41,8 +41,8 @@ function keys$(object: any): Observable<string> {
     return Observable.from(_.keys(object));
 }
 
-function stringify(arg: any) {
-    return JSON.stringify(arg);
+function stringify(...args: any[]) {
+    return JSON.stringify.apply(null, args);
 }
 
 export default new Proxy({

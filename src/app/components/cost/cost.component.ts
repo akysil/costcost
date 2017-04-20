@@ -25,7 +25,11 @@ export class CostComponent implements OnInit {
             .mergeMap(this.carService.getProperties)
             .mergeMap(this.costScoreService.getScore)
             .scan(_u.assign)
-            .distinctUntilChanged(null, _u.stringify)
-            .startWith({});
+            // .distinctUntilChanged(null, _u.stringify) TODO: consider _u. isEqual
+            .map((x: any) => {
+                console.log(_u.stringify(x, null, 4));
+                return x;
+            })
+            ;
     }
 }
