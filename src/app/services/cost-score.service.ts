@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CostScoreWarrantyService as scoreWarranty } from './cost-score.warranty.service';
+
 import _u from './cost-utilities.service';
 
 @Injectable()
@@ -8,19 +10,20 @@ export class CostScoreService {
     constructor() {
     }
     
-    public get getScore() {
-        return (data: any) => (_u.filter(data.cars, 'properties').length > 1) ?
-            Observable.of(data)
-                .mergeMap((data: any) => this._setScore(data.cars))
-                .map((cars: any[]) => _u.set(data, 'cars', cars)) :
+    public get get() {
+        return (data: any) =>
+            ((_u.get(data, 'cars.length') > 1) && _u.every(data.cars, 'properties')) ?
+            Observable.of(data.cars)
+                .mergeMap(this._set)
+                .map(_u.set.bind(null, data, 'cars')) :
             Observable.of(data);
     }
     
-    private get _setScore() {
+    private get _set() {
         return (cars: any[]) => {
             return Observable.of(cars)
-                .mergeMap(this._propertyValues)
-                .mergeMap(this._propertyScores)
+                .mergeMap(this._composeValues)
+                .mergeMap(this._computeScores)
                 .scan((cars: any, {key, value}: any) => {
                     return cars.map((car: any, index: number) => {
                         return _u.set(car, 'scores', {
@@ -32,7 +35,7 @@ export class CostScoreService {
         };
     }
     
-    private get _propertyValues() {
+    private get _composeValues() {
         return (cars: any) => Observable.from(cars)
             .pluck('properties')
             .mergeMap(_u.keys$)
@@ -40,47 +43,32 @@ export class CostScoreService {
             .map((key: string) => {
                 return {
                     key,
-                    value: cars.map(({properties}: any) =>
+                    values: cars.map(({properties}: any) =>
                         (properties) ? properties[key] || 'NOT_AVAILABLE' : 'NOT_READY')
                 }
             });
     }
     
-    private get _propertyScores() {
-        return ({key, value}: any) => {
-            return Observable.of({
-                key,
-                value: (this[`_${key}`]) ? this[`_${key}`](value) : _u.fill(value, 0)});
+    private get _computeScores() {
+        return ({key, values}: any) => {
+            
+            let score: Observable<number[]>;
+            
+            if(_u.every(values, _u.isNumber)) {
+                score = Observable.of(values);
+            } else if (this[`_${key}`]) {
+                score = this[`_${key}`](values);
+            } else {
+                score = Observable.of(_u.fill(values, 0));  // TODO: return Observable.error
+            }
+    
+            return score
+                .mergeMap(_u.percents$)
+                .map((value: any[]) => ({key, value}));
         };
     }
     
-    private _tco(props: number[]) {
-        return this._simpleNumbers(props);
-    }
-    
-    private _tmv(props: number[]) {
-        return this._simpleNumbers(props);
-    }
-    
-    private _warranty(props: any[]) {
-        // TODO:
-        // 1. multiplier: number of car's warranties
-        // 2. war. to war. ratio
-        // 3. car to car ratio (by equivalent warranties)
-        // 4. apply multiplier
-        
-        const res = Observable.from(_u.keys(_u.head(props)))
-            .map((key: string) => {
-                if(_u.every()) {
-                    //
-                }
-            });
-        
-        return this._simpleNumbers(_u.map(props, () => Math.random()));
-    }
-    
-    private _simpleNumbers(props: number[]) {
-        const percent = _u.sum(props) / 100;
-        return props.map((prop: any) => 100 - _u.round(prop / percent));
+    private get _warranty() {
+        return scoreWarranty.get;
     }
 }

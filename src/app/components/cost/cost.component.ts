@@ -23,7 +23,7 @@ export class CostComponent implements OnInit {
         this.dataOut = this.dataIn
             .mergeMap(this.carService.convertCredentialsToCars)
             .mergeMap(this.carService.getProperties)
-            .mergeMap(this.costScoreService.getScore)
+            .mergeMap(this.costScoreService.get)
             .scan(_u.assign)
             // .distinctUntilChanged(null, _u.stringify) TODO: consider _u. isEqual
             .map((x: any) => {

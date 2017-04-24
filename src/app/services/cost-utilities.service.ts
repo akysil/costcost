@@ -17,6 +17,14 @@ function acc(acc: any, item: any) {
     return new Error(`Accumulator is not an Array!`);
 }
 
+function collectionPercents$(values: any[]) {
+    return Observable.of(values)
+        .mergeMap(keys$)
+        .mergeMap((key: string) => percents$(_.map(values, key)))
+        .reduce(zipWithAdd, _.fill(Array(values.length), 0))
+        .mergeMap(percents$);
+}
+
 function isTrue(arg: any) {
     return _.isBoolean(arg) && arg;
 }
@@ -37,23 +45,44 @@ function findInEquipment(equipment: any[], name: string, attrName?: string) {
         item;
 }
 
-function keys$(object: any): Observable<string> {
-    return Observable.from(_.keys(object));
+function keys$(input: any): Observable<string> {
+    return Observable.from(_([input]).flatten().map(Object.keys).flatten().uniq().value());
+}
+
+function percents$(props: number[]) {
+    if (props.every((p: number) => _.isNumber(p) && p > 0)) {
+        const percent = _.sum(props) / 100;
+        return Observable.from(props)
+            .map((prop: number) => _.round(prop / percent))
+            .toArray();
+    }
+    return (props.every((p: number) => p === 0)) ?
+        Observable.from(props).toArray() :
+        Observable.throw(new Error('Not a number in percents$!'));
 }
 
 function stringify(...args: any[]) {
     return JSON.stringify.apply(null, args);
 }
 
-export default new Proxy({
+function zipWithAdd(...rest: any[]) {
+    return _.zipWith.apply(null, [..._.takeWhile(rest, _.isArray), _.add]);
+}
+
+const uService = {
     acc,
+    collectionPercents$,
     isTrue,
     findInCollection,
     findInEquipment,
     keys$,
-    stringify
-}, {
+    percents$,
+    stringify,
+    zipWithAdd
+};
+
+export default new Proxy(_, {
     get: (target: any, property: string) => {
-        return target[property] || _[property];
+        return uService[property] || target[property];
     }
 });

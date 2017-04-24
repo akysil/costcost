@@ -4,9 +4,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { CostTableComponent } from './cost-table.component';
 
-import { EdmundsService } from '../../services/edmunds.service';
-import { _u } from '../../services/cost-utilities.service';
-
 describe('CostTableComponent', () => {
     
     let component: CostTableComponent;
@@ -18,29 +15,18 @@ describe('CostTableComponent', () => {
         TestBed.configureTestingModule({
             declarations: [CostTableComponent],
             providers: [
-                {
-                    provide: EdmundsService,
-                    useValue: {
-                        get: () => {
-                            return new Observable((observer: any) => {
-                                observer.next({
-                                    makes: []
-                                });
-                                observer.complete();
-                            });
-                        }
-                    }
-                },
-                _u
+            
             ],
             imports: [ReactiveFormsModule]
         });
         
         fixture = TestBed.createComponent(CostTableComponent);
         component = fixture.componentInstance;
+        component.data = Observable.of([]);
         fixture.detectChanges();
         
         getNode = (tag: string) => fixture.debugElement.nativeElement.querySelector(tag);
+        
     }));
     
     it('should create the component', async(() => {

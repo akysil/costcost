@@ -31,21 +31,21 @@ describe('CostComponent', () => {
         getNode = (tag) => fixture.debugElement.nativeElement.querySelector(tag);
     });
     
-    it('should create the component', async(() => {
-        expect(component).toBeTruthy();
-    }));
-    
-    it('should have as title Cost', async(() => {
-        expect(component.title).toEqual('CostCost');
-    }));
-    
-    it('should have H1, COST-TABLE', async(() => {
-        expect(['h1', 'cost-table']
-            .every(tag => Boolean(getNode(tag))))
-            .toBe(true);
-    }));
-    
-    it('should render title in a H1', async(() => {
-        expect(getNode('h1').textContent).toContain('CostCost');
-    }));
+    //it('should create the component', async(() => {
+    //    expect(component).toBeTruthy();
+    //}));
+    //
+    //it('should have as title Cost', async(() => {
+    //    expect(component.title).toEqual('CostCost');
+    //}));
+    //
+    //it('should have H1, COST-TABLE', async(() => {
+    //    expect(['h1', 'cost-table']
+    //        .every(tag => Boolean(getNode(tag))))
+    //        .toBe(true);
+    //}));
+    //
+    //it('should render title in a H1', async(() => {
+    //    expect(getNode('h1').textContent).toContain('CostCost');
+    //}));
 });

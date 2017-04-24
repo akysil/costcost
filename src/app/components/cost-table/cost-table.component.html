@@ -4,7 +4,7 @@
         <td>{{car.credentials.model}}</td>
         <ng-template ngFor let-property [ngForOf]="values(car.properties) || ['','','','','','','','','','']">
             <td>
-                <small>{{property.value | json}}</small>
+                <small>{{property | json}}</small>
             </td>
         </ng-template>
 
