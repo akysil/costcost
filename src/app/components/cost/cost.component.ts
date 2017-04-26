@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CostCarService } from '../../services/cost-car.service';
-import { CostScoreService } from '../../services/score/cost-score.service';
+import { CostScoreService } from '../../services/cost-score.service';
 import { Observable } from 'rxjs';
 import _u from '../../services/cost-utilities.service';
 

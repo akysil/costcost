@@ -1,13 +1,13 @@
-import CostScoreWarrantyService from './cost-score.warranty.service';
+import CostScoreEngineService from './cost-score.engine.service';
 
-describe('CostScoreWarrantyService', () => {
+describe('CostScoreEngineService', () => {
     let service: any;
     let input1: any;
     let input2: any;
     
     beforeEach(() => {
-        service = (<any>new CostScoreWarrantyService).__proto__.constructor;
-    
+        service = (<any>new CostScoreEngineService).__proto__.constructor;
+        
         input1 = [
             {
                 rust: {
@@ -22,7 +22,7 @@ describe('CostScoreWarrantyService', () => {
                 }
             }
         ];
-    
+        
         input2 = [
             {
                 rust: {
@@ -45,13 +45,5 @@ describe('CostScoreWarrantyService', () => {
     
     it('.get', () => {
         expect(service.get).toBeDefined();
-    
-        service.get(input1).subscribe((data: any) => {
-            expect(data).toEqual([42, 58]);
-        });
-    
-        service.get(input2).subscribe((data: any) => {
-            expect(data).toEqual([59, 41]);
-        });
     });
 });

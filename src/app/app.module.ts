@@ -14,7 +14,7 @@ import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
 import { CostFormValidatorsService } from './services/cost-form-validators.service';
 import { CostCascadeService } from './services/cost-cascade.service';
 import { CostCarService } from './services/cost-car.service';
-import { CostScoreService } from './services/score/cost-score.service';
+import { CostScoreService } from './services/cost-score.service';
 
 import { CostOrderBy } from './pipes/cost-order-by.pipe';
 
