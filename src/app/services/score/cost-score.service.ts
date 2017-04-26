@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CostScoreWarrantyService as scoreWarranty } from './cost-score.warranty.service';
+import CostScoreRatingService from './cost-score.rating.service';
+import CostScoreWarrantyService from './cost-score.warranty.service';
 
-import _u from './cost-utilities.service';
+import _u from '../cost-utilities.service';
 
 @Injectable()
 export class CostScoreService {
@@ -56,8 +57,8 @@ export class CostScoreService {
             
             if(_u.every(values, _u.isNumber)) {
                 score = Observable.of(values);
-            } else if (this[`_${key}`]) {
-                score = this[`_${key}`](values);
+            } else if (CostScoreService[`_${key}`]) {
+                score = CostScoreService[`_${key}`](values);
             } else {
                 score = Observable.of(_u.fill(values, 0));  // TODO: return Observable.error
             }
@@ -68,7 +69,11 @@ export class CostScoreService {
         };
     }
     
-    private get _warranty() {
-        return scoreWarranty.get;
+    static get _rating() {
+        return CostScoreRatingService.get;
+    }
+    
+    static get _warranty() {
+        return CostScoreWarrantyService.get;
     }
 }

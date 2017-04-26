@@ -1,6 +1,6 @@
 {
     "name": "CostCost",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "car value comparator",
     "scripts": {
         "clean": "rimraf aot && rimraf coverage && rimraf src/**/*.js && rimraf src/**/*.map && rimraf src/**/*.css",

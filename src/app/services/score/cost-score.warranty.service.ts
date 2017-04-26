@@ -1,7 +1,7 @@
-import _u from './cost-utilities.service';
+import _u from '../cost-utilities.service';
 import { Observable } from 'rxjs/Observable';
 
-export class CostScoreWarrantyService {
+export default class CostScoreWarrantyService {
     
     static get(props: any[]) {
         const propsKeys = props.map(_u.keys);
@@ -27,7 +27,7 @@ export class CostScoreWarrantyService {
     static scoreProperty(values: any[]) {
         return Observable.of(values)
             .mergeMap(CostScoreWarrantyService.normalize)
-            .mergeMap(_u.collectionPercents$);
+            .mergeMap(_u.percents$);
     }
     
     static normalize(values: any) {

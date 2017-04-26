@@ -12,15 +12,6 @@ describe('_u: ', () => {
         expect(service).toBeDefined();
     });
     
-    it('collectionPercents$', () => {
-        expect(service.collectionPercents$).toBeDefined();
-        
-        input = [{mileage: 50000, years: 4}, {mileage: 50000, years: 8}];
-        service.collectionPercents$(input).subscribe((data: any[]) => {
-            expect(data).toEqual([42, 59]);
-        });
-    });
-    
     it('percents$ should be defined', () => {
         expect(service.percents$).toBeDefined();
     });
@@ -37,6 +28,11 @@ describe('_u: ', () => {
         service.percents$([3, 1, 4, 2]).subscribe((data: number[]) => {
             expect(data).toEqual([30, 10, 40, 20]);
         });
+    
+        input = [{mileage: 50000, years: 4}, {mileage: 50000, years: 8}];
+        service.percents$(input).subscribe((data: any[]) => {
+            expect(data).toEqual([42, 59]);
+        });
     });
     
     it('percents$ should give back nulls', () => {
@@ -47,7 +43,7 @@ describe('_u: ', () => {
     
     it('percents$ should return error', () => {
         service.percents$([1, '1']).subscribe(null, ({originalStack}: any) => {
-            expect(originalStack).toMatch(/Not a number in percents\$!/);
+            expect(originalStack).toMatch(/Not valid for percents\$!/);
         });
     });
 });

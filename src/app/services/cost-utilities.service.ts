@@ -17,14 +17,6 @@ function acc(acc: any, item: any) {
     return new Error(`Accumulator is not an Array!`);
 }
 
-function collectionPercents$(values: any[]) {
-    return Observable.of(values)
-        .mergeMap(keys$)
-        .mergeMap((key: string) => percents$(_.map(values, key)))
-        .reduce(zipWithAdd, _.fill(Array(values.length), 0))
-        .mergeMap(percents$);
-}
-
 function isTrue(arg: any) {
     return _.isBoolean(arg) && arg;
 }
@@ -49,16 +41,33 @@ function keys$(input: any): Observable<string> {
     return Observable.from(_([input]).flatten().map(Object.keys).flatten().uniq().value());
 }
 
-function percents$(props: number[]) {
-    if (props.every((p: number) => _.isNumber(p) && p > 0)) {
+function percents$(props: number[]): Observable<any> {
+    if (_.every(props, _.isNumber)) {
+        return percentsNumbers$(props);
+    } else if (_.every(props, _.isObject)) {
+        return percentsObject$(props);
+    } else {
+        return Observable.throw(new Error('Not valid for percents$!'));
+    }
+}
+
+function percentsNumbers$(props: number[]) {
+    if (props.every((p: number) => p === 0)) {
+        return Observable.from(props).toArray();
+    } else {
         const percent = _.sum(props) / 100;
         return Observable.from(props)
             .map((prop: number) => _.round(prop / percent))
             .toArray();
     }
-    return (props.every((p: number) => p === 0)) ?
-        Observable.from(props).toArray() :
-        Observable.throw(new Error('Not a number in percents$!'));
+}
+
+function percentsObject$(values: any[]) {
+    return Observable.of(values)
+        .mergeMap(keys$)
+        .mergeMap((key: string) => percentsNumbers$(_.map(values, key)))
+        .reduce(zipWithAdd, _.fill(Array(values.length), 0))
+        .mergeMap(percentsNumbers$);
 }
 
 function stringify(...args: any[]) {
@@ -71,7 +80,6 @@ function zipWithAdd(...rest: any[]) {
 
 const uService = {
     acc,
-    collectionPercents$,
     isTrue,
     findInCollection,
     findInEquipment,

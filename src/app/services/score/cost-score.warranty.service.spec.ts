@@ -1,14 +1,12 @@
-import { CostScoreWarrantyService } from './cost-score.warranty.service';
+import CostScoreWarrantyService from './cost-score.warranty.service';
 
 describe('CostScoreWarrantyService', () => {
-    let costScoreWarrantyService: any;
     let service: any;
     let input1: any;
     let input2: any;
     
     beforeEach(() => {
-        costScoreWarrantyService = new CostScoreWarrantyService;
-        service = costScoreWarrantyService.__proto__.constructor;
+        service = (<any>new CostScoreWarrantyService).__proto__.constructor;
     
         input1 = [
             {
