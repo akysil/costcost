@@ -46,6 +46,8 @@ function percents$(props: number[]): Observable<any> {
         return percentsNumbers$(props);
     } else if (_.every(props, _.isObject)) { // TODO: isQualifiedObject
         return percentsObject$(props);
+    } else if (_.some(props, _.isNull)) {
+        return Observable.of(_.fill(props, 0));
     } else {
         return Observable.throw(new Error('Not valid for percents$!'));
     }

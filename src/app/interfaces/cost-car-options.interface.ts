@@ -49,8 +49,7 @@ export interface CostCarOptionsRoominess {
 export interface CostCarOptionsComfort {
     seatUpholstery?: string,
     steeringWheelTrim?: string,
-    legRoom1?: number,
-    legRoom2?: number
+    legRoom?: number[]
 }
 
 export interface CostCarOptionsSafety {

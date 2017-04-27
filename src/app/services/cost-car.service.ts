@@ -222,15 +222,16 @@ export class CostCarService {
                 
                 const seatUpholstery = findInEquipment('1st Row Seats', '1st Row Upholstery');
                 const steeringWheelTrim = findInEquipment('Steering Wheel', 'Steering Wheel Trim');
-                const legRoom1 = Number(findInEquipment('Interior Dimensions', '1st Row Leg Room'));
-                const legRoom2 = Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'));
+                const legRoom = [
+                    Number(findInEquipment('Interior Dimensions', '1st Row Leg Room')),
+                    Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'))
+                ];
                 
                 return {
                     comfort: {
                         seatUpholstery,
                         steeringWheelTrim,
-                        legRoom1,
-                        legRoom2
+                        legRoom
                     }
                 };
                 
