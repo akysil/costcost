@@ -27,7 +27,7 @@ export class CostComponent implements OnInit {
             .scan(_u.assign)
             // .distinctUntilChanged(null, _u.stringify) TODO: consider _u. isEqual
             .map((x: any) => {
-                // console.log(_u.stringify(x, null, 4));
+                console.log(_u.stringify(x, null, 4));
                 return x;
             });
     }
