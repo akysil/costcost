@@ -44,7 +44,7 @@ function keys$(input: any): Observable<string> {
 function percents$(props: number[]): Observable<any> {
     if (_.every(props, _.isNumber)) {
         return percentsNumbers$(props);
-    } else if (_.every(props, _.isObject)) { // TODO: isQualifiedObject
+    } else if (_.every(props, _.isObject)) {
         return percentsObject$(props);
     } else if (_.some(props, _.isNull)) {
         return Observable.of(_.fill(props, 0));

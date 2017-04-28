@@ -43,7 +43,7 @@ export class CostScoreService {
                 return {
                     key,
                     values: cars.map(({properties}: any) =>
-                        (properties) ? properties[key] || 'NOT_AVAILABLE' : 'NOT_READY')
+                        (properties) ? properties[key] || null : 'NOT_READY')
                 }
             });
     }
@@ -54,10 +54,12 @@ export class CostScoreService {
             let score: Observable<number[]>;
             let scoreFn: (values: any[]) => Observable<number[]> =
                 _u.get(scoreServices, 'CostScore' + _u.upperFirst(key) + 'Service.get');
-            
-            if (scoreFn) {
+    
+            if (_u.some(values, _u.isNull)) {
+                score = Observable.of(_u.fill(values, 0));
+            } else if (scoreFn) {
                 score = scoreFn(values);
-            } else if (_u.every(values, _u.isNumber)) {
+            } else if (_u.every(values, _u.isNumber)) { // TODO: isQualifiedProperty
                 score = Observable.of(values);
             } else {
                 score = Observable.of(_u.fill(values, 0));  // TODO: return Observable.error
