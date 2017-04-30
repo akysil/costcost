@@ -1,7 +1,7 @@
 module.exports = {
-    suppressPassed: false,
+    suppressPassed: true,
     suppressSkipped: false,
     suppressFailed: false,
-    suppressErrorSummary: true,
+    suppressErrorSummary: false,
     maxLogLines: 1
 };

@@ -31,7 +31,7 @@ module.exports = function(config) {
             includeAllSources: false
         },
         remapCoverageReporter: {
-            'text-summary': null, // to show summary in console
+            // 'text-summary': null, // to show summary in console
             json: './coverage/report.json',
             html: './coverage'
         },
