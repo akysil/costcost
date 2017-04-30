@@ -19,8 +19,8 @@ import { CostFormValidatorsService } from '../../services/cost-form-validators.s
 
 @Component({
     selector: 'cost-credential',
-    templateUrl: 'cost-credentials.component.html',
-    styleUrls: ['cost-credentials.component.scss']
+    templateUrl: 'cost-credential.component.html',
+    styleUrls: ['cost-credential.component.scss']
 })
 export class CostCredentialComponent implements OnInit {
     
@@ -61,7 +61,7 @@ export class CostCredentialComponent implements OnInit {
         this.form
             .flattenValueChanges
             .subscribe((flattenValue: any) => this.valueChanges.emit(flattenValue));
-        
+    
         this.form.get('zip').setValue('98087');
     }
     
