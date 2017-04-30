@@ -30,7 +30,8 @@ export class CostScoreService {
                             ...{[key]: value[index]}
                         });
                     });
-                }, cars);
+                }, cars)
+                .mergeMap(this._computeRawScore);
         };
     }
     
@@ -68,6 +69,18 @@ export class CostScoreService {
             return score
                 .mergeMap(_u.percents$)
                 .map((value: any[]) => ({key, value}));
+        };
+    }
+    
+    private get _computeRawScore() {
+        return (cars: any) => {
+            return Observable.from(cars)
+                .pluck('scores')
+                .toArray()
+                .mergeMap(_u.percents$)
+                .map((rawScores: number[]) =>
+                    _u.map(cars, (car: any, i: number) =>
+                        _u.set(car, 'rawScore', rawScores[i])))
         };
     }
 }
