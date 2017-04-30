@@ -1,4 +1,5 @@
 import _u from './cost-utilities.service';
+import { every } from 'rxjs/operator/every';
 
 describe('_u: ', () => {
     let service: any;
@@ -12,11 +13,31 @@ describe('_u: ', () => {
         expect(service).toBeDefined();
     });
     
+    it('isQualifiedProperty should be defined', () => {
+        expect(service.isQualifiedProperty).toBeDefined();
+    });
+    
+    it('isQualifiedProperty should qualify number', () => {
+        expect([0, 1]
+            .every(service.isQualifiedProperty)).toBe(true);
+    
+        expect([null, [], {}, '2', undefined]
+            .some(service.isQualifiedProperty)).toBe(false);
+    });
+    
+    it('isQualifiedProperty should qualify {[key]: number}', () => {
+        expect([{a: 0}, {a: 1, b: 2}]
+            .every(service.isQualifiedProperty)).toBe(true);
+    
+        expect([null, [], {}, '2', undefined].map((a: any) => ({a}))
+            .some(service.isQualifiedProperty)).toBe(false);
+    });
+    
     it('percents$ should be defined', () => {
         expect(service.percents$).toBeDefined();
     });
     
-    it('percents$ should works', () => {
+    it('percents$ should score numbers', () => {
         service.percents$([1, 2]).subscribe((data: number[]) => {
             expect(data).toEqual([33, 67]);
         });

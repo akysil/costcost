@@ -8,17 +8,13 @@ function acc(acc: any, item: any) {
         acc.push(item);
         return acc;
     }
-
+    
     //if (_.isObject(acc)) {
     //    rest.forEach((item: any) => ({...acc, ...item}));
     //    return acc;
     //}
     
     return new Error(`Accumulator is not an Array!`);
-}
-
-function isTrue(arg: any) {
-    return _.isBoolean(arg) && arg;
 }
 
 function findInCollection(collection: any[], key: string, value?: string) {
@@ -35,6 +31,14 @@ function findInEquipment(equipment: any[], name: string, attrName?: string) {
     return (attrName) ?
         findInCollection(item.attributes, 'name', attrName).value :
         item;
+}
+
+function isTrue(arg: any) {
+    return _.isBoolean(arg) && arg;
+}
+
+function isQualifiedProperty(input: any): boolean {
+    return _.isNumber(input) || (_.isObject(input) && _.values(input).length && _.every(_.values(input), _.isNumber));
 }
 
 function keys$(input: any): Observable<string> {
@@ -82,9 +86,10 @@ function zipWithAdd(...rest: any[]) {
 
 const uService = {
     acc,
-    isTrue,
     findInCollection,
     findInEquipment,
+    isTrue,
+    isQualifiedProperty,
     keys$,
     percents$,
     stringify,
