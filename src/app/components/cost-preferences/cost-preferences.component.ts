@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output, DoCheck } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
@@ -7,27 +7,31 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class CostPreferencesComponent implements OnInit {
     
-    constructor() {}
-    
     defaults: any;
     form: FormGroup;
     
-    ngOnInit() {
-        
+    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
+    
+    constructor() {
         this.defaults = {
             type: 'range',
             min: '1',
             max: '100'
         };
-        
+    
         this.form = new FormGroup({
-            performance: new FormControl('1'),
-            prestige: new FormControl('1'),
-            price: new FormControl('1'),
+            performance: new FormControl(this.defaults.min),
+            prestige: new FormControl(this.defaults.min),
+            price: new FormControl(this.defaults.min),
         });
-        
+    
         this.form.valueChanges.subscribe((value: any) => this.valueChanges.emit(value));
     }
     
-    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
+    ngOnInit() {
+        
+        // TODO: setTimeout
+        setTimeout(() => this.valueChanges.emit(this.form.value));
+    }
+    
 }
