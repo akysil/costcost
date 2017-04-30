@@ -33,6 +33,12 @@ function findInEquipment(equipment: any[], name: string, attrName?: string) {
         item;
 }
 
+function invertPercents$(values: number[]) {
+    return Observable.from(values)
+        .map((value: number) => 100 - value)
+        .toArray();
+}
+
 function isTrue(arg: any) {
     return _.isBoolean(arg) && arg;
 }
@@ -88,6 +94,7 @@ const uService = {
     acc,
     findInCollection,
     findInEquipment,
+    invertPercents$,
     isTrue,
     isQualifiedProperty,
     keys$,

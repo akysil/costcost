@@ -13,6 +13,16 @@ describe('_u: ', () => {
         expect(service).toBeDefined();
     });
     
+    it('invertPercents$ should be defined', () => {
+        expect(service.invertPercents$).toBeDefined();
+    });
+    
+    it('invertPercents$ should invert percents', () => {
+        service.invertPercents$([10, 90]).subscribe((data: number[]) => {
+            expect(data).toEqual([90, 10]);
+        });
+    });
+    
     it('isQualifiedProperty should be defined', () => {
         expect(service.isQualifiedProperty).toBeDefined();
     });
