@@ -16,6 +16,7 @@ import {
 } from '../../classes/cascade-form';
 import { CostCascadeService } from '../../services/cost-cascade.service';
 import { CostFormValidatorsService } from '../../services/cost-form-validators.service';
+import _u from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost-credential',
@@ -34,6 +35,7 @@ export class CostCredentialComponent implements OnInit {
         
         this.form =
             new CostCascadeFormGroup({
+                _timeStamp: new FormControl(_u.now()),
                 zip: new FormControl('', [
                     Validators.required,
                     Validators.minLength(5),
