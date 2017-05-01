@@ -40,6 +40,7 @@ export class CostCredentialComponent implements OnInit {
         
         this.form =
             new CostCascadeFormGroup({
+                _timeStamp: new FormControl(_u.now()),
                 zip: new FormControl('', [
                     Validators.required,
                     Validators.minLength(5),
