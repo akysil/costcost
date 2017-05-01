@@ -12,16 +12,6 @@ export class CostCarService {
         //
     }
     
-    get convertCredentialsToCars() {
-        return (data: any) => _u.get(data, 'credentials.length') ?
-            Observable.of(data)
-                .map(({credentials, ...rest}: any) => {
-                    const cars = credentials.map((c: any) => ({credentials: c}));
-                    return {cars, ...rest};
-                }) :
-            Observable.of(data);
-    }
-    
     get getProperties() {
         return (data: any) => _u.get(data, 'cars.length') ?
             Observable.from(data.cars)
@@ -34,7 +24,7 @@ export class CostCarService {
     get getOptions() {
         return (car: any): Observable<any> => {
             
-            const {state, styleId, zip} = <CostCascadeValue>car.credentials;
+            const {state, styleId, zip} = <CostCascadeValue>_u.get(car, 'credentials', {});
             
             return (state && styleId && zip) ? Observable.merge(
                     this.getRating(styleId),

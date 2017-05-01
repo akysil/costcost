@@ -22,7 +22,6 @@ export class CostComponent implements OnInit {
     ngOnInit() {
         this.dataOut = this.dataIn
             .scan(_u.assign)
-            .mergeMap(this.carService.convertCredentialsToCars)
             .mergeMap(this.carService.getProperties)
             .mergeMap(this.costScoreService.get)
             // .distinctUntilChanged(null, _u.stringify) TODO: consider _u. isEqual

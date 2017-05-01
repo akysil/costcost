@@ -16,6 +16,7 @@ import {
 } from '../../classes/cascade-form';
 import { CostCascadeService } from '../../services/cost-cascade.service';
 import { CostFormValidatorsService } from '../../services/cost-form-validators.service';
+import _u from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost-credential',
@@ -24,13 +25,18 @@ import { CostFormValidatorsService } from '../../services/cost-form-validators.s
 })
 export class CostCredentialComponent implements OnInit {
     
+    private _timeStamp: number;
     form: CostCascadeFormGroup;
+    
+    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
     
     constructor(private service: CostCascadeService,
         private validators: CostFormValidatorsService) {
     }
     
     ngOnInit() {
+        
+        this._timeStamp = _u.now();
         
         this.form =
             new CostCascadeFormGroup({
@@ -60,10 +66,15 @@ export class CostCredentialComponent implements OnInit {
         
         this.form
             .flattenValueChanges
-            .subscribe((flattenValue: any) => this.valueChanges.emit(flattenValue));
-    
+            .subscribe((flattenValue: any) => this.emit(flattenValue));
+        
         this.form.get('zip').setValue('98087');
     }
     
-    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
+    get emit() {
+        return (credentials: any) => this.valueChanges.emit({
+            _timeStamp: this._timeStamp,
+            credentials
+        });
+    }
 }
