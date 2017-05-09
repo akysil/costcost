@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Input, Output, DoCheck } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import _u from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost-preferences',
@@ -25,13 +26,17 @@ export class CostPreferencesComponent implements OnInit {
             price: new FormControl(this.defaults.min),
         });
     
-        this.form.valueChanges.subscribe((value: any) => this.valueChanges.emit(value));
+        this.form.valueChanges.subscribe((value: any) => this._emit(value));
     }
     
     ngOnInit() {
         
         // TODO: setTimeout
-        setTimeout(() => this.valueChanges.emit(this.form.value));
+        setTimeout(() => this._emit(this.form.value));
+    }
+    
+    private _emit(value: any) {
+        return this.valueChanges.emit(_u.mapValues(value, Number));
     }
     
 }
