@@ -11,12 +11,10 @@ export class CostPreferencesComponent implements OnInit {
     defaults: any;
     form: FormGroup;
     
-    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
-    
     constructor() {
         this.defaults = {
             type: 'range',
-            min: '1',
+            min: '0',
             max: '100'
         };
     
@@ -26,17 +24,22 @@ export class CostPreferencesComponent implements OnInit {
             price: new FormControl(this.defaults.min),
         });
     
-        this.form.valueChanges.subscribe((value: any) => this._emit(value));
+        this.form.valueChanges.subscribe((value: any) => this.emit(value));
     }
     
     ngOnInit() {
         
         // TODO: setTimeout
-        setTimeout(() => this._emit(this.form.value));
+        setTimeout(() => this.emit(this.form.value));
     }
     
-    private _emit(value: any) {
-        return this.valueChanges.emit(_u.mapValues(value, Number));
+    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
+    
+    emit(value: string) {
+        return this.valueChanges.emit(_u.mapValues(value, this.mapValue));
     }
     
+    mapValue(value: string) {
+        return (Number(value) / 100) + 1;
+    }
 }
