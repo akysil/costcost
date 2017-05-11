@@ -21,7 +21,6 @@ export class CostTableComponent implements OnInit {
     
     ngOnInit() {
         this.cars = this.data
-            .pluck('cars')
             .startWith([])
         ;
     }

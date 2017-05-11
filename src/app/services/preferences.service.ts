@@ -9,12 +9,7 @@ export class PreferencesService {
     }
     
     public get apply() {
-        return ([all, preferences]: any[]) => {
-            
-            let {cars} = all;
-    
-            // console.log(preferences);
-            
+        return ([cars, preferences]: any[]) => {
             return (preferences && cars && _u.every(cars, 'scores')) ?
                 Observable.from(cars)
                     .mergeMap(({scores, ...rest}: any) => {
@@ -29,7 +24,7 @@ export class PreferencesService {
                             .map((newScores: any) => ({scores: {...scores, ...newScores}, ...rest}));
                     })
                     .toArray() :
-                Observable.of([null]);
+                Observable.empty();
         };
     }
     
@@ -43,5 +38,4 @@ export class PreferencesService {
             return keys[key] || [];
         };
     }
-    
 }

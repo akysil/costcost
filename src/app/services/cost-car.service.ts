@@ -13,12 +13,11 @@ export class CostCarService {
     }
     
     get getProperties() {
-        return (data: any) => _u.get(data, 'cars.length') ?
-            Observable.from(data.cars)
+        return (cars: any) => _u.get(cars, 'length') ?
+            Observable.from(cars)
                 .mergeMap(this.getOptions)
-                .toArray()
-                .map((cars: any) => ({...data, cars})) :
-            Observable.of(data);
+                .toArray() :
+            Observable.of(cars);
     }
     
     get getOptions() {
