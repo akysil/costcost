@@ -1,11 +1,8 @@
 <h1>CostCost</h1>
 
-<cost-preferences
-  (valueChanges)="dataIn.emit({preferences: $event})"
-  (valueChanges)="preferences.emit($event)">
-</cost-preferences>
+<cost-preferences (valueChanges)="preferences.emit($event)"></cost-preferences>
+<cost-credentials (valueChanges)="credentials.emit($event)"></cost-credentials>
 
-<cost-credentials (valueChanges)="dataIn.emit({cars: $event})"></cost-credentials>
-<cost-table [data]="dataOut"></cost-table>
+<cost-table [data]="cars"></cost-table>
 
 <footer>CostCost Inc.</footer>

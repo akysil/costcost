@@ -3,6 +3,7 @@ import {
     Input, OnInit
 } from '@angular/core';
 import _u from '../../services/cost-utilities.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'cost-table',
@@ -13,7 +14,7 @@ export class CostTableComponent implements OnInit {
     
     values: any = _u.values; // TODO: move to pipe
     @Input() data: any;
-    cars: any;
+    cars: Observable<any>;
     
     constructor() {
         //
@@ -21,7 +22,6 @@ export class CostTableComponent implements OnInit {
     
     ngOnInit() {
         this.cars = this.data
-            .pluck('cars')
             .startWith([])
         ;
     }

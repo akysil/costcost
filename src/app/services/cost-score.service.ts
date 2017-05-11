@@ -10,12 +10,11 @@ export class CostScoreService {
     }
     
     public get get() {
-        return (data: any) =>
-            ((_u.get(data, 'cars.length') > 1) && _u.every(data.cars, 'properties')) ?
-                Observable.of(data.cars)
-                    .mergeMap(this._set)
-                    .map(_u.set.bind(null, data, 'cars')) :
-                Observable.of(data);
+        return (cars: any) =>
+            ((_u.get(cars, 'length') > 1) && _u.every(cars, 'properties')) ?
+                Observable.of(cars)
+                    .mergeMap(this._set) :
+                Observable.of(cars);
     }
     
     private get _set() {

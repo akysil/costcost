@@ -13,9 +13,9 @@ import { PreferencesService } from '../../services/preferences.service';
 })
 export class CostComponent implements OnInit {
     
-    public dataIn: EventEmitter<any> = new EventEmitter();
     public preferences: EventEmitter<any> = new EventEmitter();
-    public dataOut: Observable<any>;
+    public credentials: EventEmitter<any> = new EventEmitter();
+    public cars: Observable<any>;
     
     constructor(private carService: CostCarService,
         private costScoreService: CostScoreService,
@@ -24,20 +24,12 @@ export class CostComponent implements OnInit {
     }
     
     ngOnInit() {
-        this.dataOut = this.dataIn
-            .scan(_u.assign)
+        this.cars = this.credentials
             .mergeMap(this.carService.getProperties)
             .mergeMap(this.costScoreService.get)
-            // .distinctUntilChanged(null, _u.stringify) TODO: consider _u. isEqual
-            .map((x: any) => {
-                // console.log(_u.stringify(x, null, 4));
-                return x;
-            });
-        
-        // this.preferences.subscribe((data: any) => console.log(data));
-        
-        let test = this.dataOut.withLatestFrom(this.preferences)
+            .combineLatest(this.preferences)
             .mergeMap(this.preferencesService.apply);
-        test.subscribe((data: any) => console.log(data));
+        
+        // this.cars.subscribe((cars: any) => console.log(cars));
     }
 }
