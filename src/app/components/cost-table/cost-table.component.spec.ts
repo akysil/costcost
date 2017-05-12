@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
 import { CostTableComponent } from './cost-table.component';
+import { OrderBy } from '../../pipes/order-by.pipe';
 
 describe('CostTableComponent', () => {
     
@@ -13,7 +14,10 @@ describe('CostTableComponent', () => {
     beforeEach(async(() => {
         
         TestBed.configureTestingModule({
-            declarations: [CostTableComponent],
+            declarations: [
+                CostTableComponent,
+                OrderBy
+            ],
             providers: [
             
             ],

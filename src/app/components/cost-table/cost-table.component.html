@@ -1,5 +1,5 @@
 <table border="1">
-    <tr *ngFor="let car of cars | async ">
+    <tr *ngFor="let car of cars | async | orderBy:['-score']">
         <td>{{car.credentials.make}}</td>
         <td>{{car.credentials.model}}</td>
         <ng-template ngFor let-property [ngForOf]="values(car.properties) || ['','','','','','','','','','']">
@@ -7,6 +7,7 @@
                 <small>{{property | json}}</small>
             </td>
         </ng-template>
+        <td>{{car.score}}</td>
 
     </tr>
 </table>

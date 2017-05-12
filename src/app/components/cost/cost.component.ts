@@ -4,6 +4,7 @@ import { CostScoresService } from '../../services/cost-scores.service';
 import { Observable } from 'rxjs';
 import { PreferencesService } from '../../services/preferences.service';
 import { ScoreService } from '../../services/score.service';
+import _u from '../../services/cost-utilities.service';
 
 @Component({
     selector: 'cost',

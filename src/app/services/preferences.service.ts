@@ -32,7 +32,11 @@ export class PreferencesService {
             const keys = {
                 performance: ['engine', 'transmission', 'offRoad'],
                 prestige: ['roominess', 'comfort', 'safety'],
-                price: ['tco', 'tmv', 'warranty']
+                price: [
+                    'tco',
+                    'tmv',
+                    // 'warranty'
+                ]
             };
             return keys[key] || [];
         };
