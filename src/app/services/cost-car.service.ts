@@ -237,7 +237,7 @@ export class CostCarService {
                 .map(composeSafety);
             
             function composeSafety(data: any): CostCarOptions {
-                return (data.nhtsa) ? {safety: {nhtsa: Number(data.nhtsa.overall)}} : null;
+                return (data.nhtsa) ? {safety: {nhtsa: Number(data.nhtsa.overall)}} : {safety: null};
             }
         }
     }
