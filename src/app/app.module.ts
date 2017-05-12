@@ -16,7 +16,7 @@ import { CostCascadeService } from './services/cost-cascade.service';
 import { CostCarService } from './services/cost-car.service';
 import { CostScoresService } from './services/cost-scores.service';
 
-import { CostOrderBy } from './pipes/cost-order-by.pipe';
+import { OrderBy } from './pipes/order-by.pipe';
 
 @NgModule({
     declarations: [
@@ -25,7 +25,7 @@ import { CostOrderBy } from './pipes/cost-order-by.pipe';
         CostCredentialsComponent,
         CostCredentialComponent,
         CostTableComponent,
-        CostOrderBy
+        OrderBy
     ],
     imports: [
         BrowserModule,

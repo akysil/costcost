@@ -1,9 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * Sort items in array by given key
+ * @example
+ * *ngFor="let item of items | orderBy:['key']"
+ */
+
 @Pipe({
     name: "orderBy"
 })
-export class CostOrderBy implements PipeTransform {
+export class OrderBy implements PipeTransform {
     transform(collection: any[], keys: string[]): any[] {
         
         let newCollection = [...collection];
