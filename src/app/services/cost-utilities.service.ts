@@ -86,8 +86,23 @@ function stringify(...args: any[]) {
     return JSON.stringify.apply(null, args);
 }
 
+function sum$(values: number[]) {
+    return Observable.from(values)
+        .reduce(_.add, 0);
+}
+
+function sumProperties$(input: any) {
+    return Observable.of(input)
+        .mergeMap(values$)
+        .reduce(_.add, 0);
+}
+
 function zipWithAdd(...rest: any[]) {
     return _.zipWith.apply(null, [..._.takeWhile(rest, _.isArray), _.add]);
+}
+
+function values$(input: any) {
+    return Observable.from(_.values(input));
 }
 
 const uService = {
@@ -100,7 +115,10 @@ const uService = {
     keys$,
     percents$,
     stringify,
-    zipWithAdd
+    sum$,
+    sumProperties$,
+    zipWithAdd,
+    values$
 };
 
 export default new Proxy(_, {

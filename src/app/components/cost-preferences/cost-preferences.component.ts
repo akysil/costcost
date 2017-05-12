@@ -14,8 +14,8 @@ export class CostPreferencesComponent implements OnInit {
     constructor() {
         this.defaults = {
             type: 'range',
-            min: '0',
-            max: '100'
+            min: '1',
+            max: '10'
         };
     
         this.form = new FormGroup({
@@ -36,10 +36,6 @@ export class CostPreferencesComponent implements OnInit {
     @Output() valueChanges: EventEmitter<any> = new EventEmitter();
     
     emit(value: string) {
-        return this.valueChanges.emit(_u.mapValues(value, this.mapValue));
-    }
-    
-    mapValue(value: string) {
-        return (Number(value) / 100) + 1;
+        return this.valueChanges.emit(_u.mapValues(value, Number));
     }
 }

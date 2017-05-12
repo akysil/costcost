@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import _u from './cost-utilities.service';
-import scoreServices from './scores/index';
+import scoresServices from './scores/index';
 
 @Injectable()
-export class CostScoreService {
+export class CostScoresService {
     
     constructor() {
     }
@@ -53,7 +53,7 @@ export class CostScoreService {
             
             let score: Observable<number[]>;
             let scoreFn$: (values: any[]) => Observable<number[]> =
-                _u.get(scoreServices, 'CostScore' + _u.upperFirst(key) + 'Service.get');
+                _u.get(scoresServices, 'CostScore' + _u.upperFirst(key) + 'Service.get');
     
             if (_u.some(values, (value: any) => value === 'NOT_AVAILABLE')) {
                 score = Observable.of(_u.fill(values, 0));
@@ -79,7 +79,7 @@ export class CostScoreService {
                 .mergeMap(_u.percents$)
                 .map((rawScores: number[]) =>
                     _u.map(cars, (car: any, i: number) =>
-                        _u.set(car, 'rawScore', rawScores[i])))
+                        _u.set(car, 'rawScore', rawScores[i])));
         };
     }
 }

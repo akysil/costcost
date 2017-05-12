@@ -15,7 +15,6 @@ export class PreferencesService {
                     .mergeMap(({scores, ...rest}: any) => {
                         return Observable.from(_u.toPairs(preferences))
                             .mergeMap(([preference, rate]: any[]) => {
-                                // console.log(preference, rate);
                                 return Observable.of(scores)
                                     .map((scores) => _u.pick(scores, this._keys(preference)))
                                     .map((scores) => _u.mapValues(scores, (value: number) => value * rate));
