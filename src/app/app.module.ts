@@ -13,7 +13,7 @@ import { EdmundsService } from './services/edmunds.service';
 import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
 import { CostFormValidatorsService } from './services/cost-form-validators.service';
 import { CostCascadeService } from './services/cost-cascade.service';
-import { CostCarService } from './services/cost-car.service';
+import { PropertiesService } from './services/properties.service';
 import { CostScoresService } from './services/cost-scores.service';
 
 import { OrderBy } from './pipes/order-by.pipe';
@@ -37,7 +37,7 @@ import { OrderBy } from './pipes/order-by.pipe';
         EdmundsDefaultsService,
         CostCascadeService,
         CostFormValidatorsService,
-        CostCarService,
+        PropertiesService,
         CostScoresService
     ],
     bootstrap: [

@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { EdmundsService } from './edmunds.service';
-import _u from './cost-utilities.service';
 import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 import { CostCarOptions } from '../interfaces/cost-car-options.interface';
 
+import _u from './cost-utilities.service';
+
 @Injectable()
-export class CostCarService {
+export class PropertiesService {
     
     constructor(private data: EdmundsService) {
         //
     }
     
-    get getProperties() {
+    get apply() {
+        
         return (cars: any) => _u.get(cars, 'length') ?
             Observable.from(cars)
                 .mergeMap(this.getOptions)

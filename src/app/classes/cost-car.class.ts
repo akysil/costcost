@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CostCarOptions } from '../interfaces/cost-car-options.interface';
-import { CostCarService } from '../services/cost-car.service';
+import { CostCarService } from '../services/properties.service';
 import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
 
 @Injectable()
