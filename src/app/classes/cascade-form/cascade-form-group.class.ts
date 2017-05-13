@@ -11,15 +11,15 @@ import { CostCascadeValue } from '../../interfaces/cost-cascade-form.interface';
 @Injectable()
 export class CostCascadeFormGroup extends FormGroup {
     
+    private _flattenValueCache: string;
+    
     constructor(controls: any,
                 validator?: ValidatorFn,
                 asyncValidator?: AsyncValidatorFn) {
         
         super(controls, validator, asyncValidator);
         
-        this.valueChanges
-            .distinctUntilChanged((newVal:any, oldVal:any) => JSON.stringify(newVal) === JSON.stringify(oldVal))
-            .subscribe(() => this.flattenValueChanges.emit(this.flattenValue));
+        this.valueChanges.subscribe(() => this.emit(this.flattenValue));
     }
     
     get flattenValue(): CostCascadeValue {
@@ -32,6 +32,16 @@ export class CostCascadeFormGroup extends FormGroup {
                 : {...flatten, ...{[key]: value[key]}};
         }
         return flatten;
+    }
+    
+    get emit() {
+        return (value: any) => {
+            const newValue = JSON.stringify(value);
+            if (newValue != this._flattenValueCache) {
+                this._flattenValueCache = newValue;
+                this.flattenValueChanges.emit(value);
+            }
+        }
     }
     
     @Output() flattenValueChanges: EventEmitter<any> = new EventEmitter();
