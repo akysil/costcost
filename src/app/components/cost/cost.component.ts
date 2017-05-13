@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { PropertiesService } from '../../services/properties.service';
-import { CostScoresService } from '../../services/cost-scores.service';
+import { ScoresService } from '../../services/cost-scores.service';
 import { Observable } from 'rxjs';
 import { PreferencesService } from '../../services/preferences.service';
 import { ScoreService } from '../../services/score.service';
@@ -19,7 +19,7 @@ export class CostComponent implements OnInit {
     
     constructor(
         private propertiesService: PropertiesService,
-        private scoresService: CostScoresService,
+        private scoresService: ScoresService,
         private preferencesService: PreferencesService,
         private scoreService: ScoreService) {
         
@@ -28,7 +28,7 @@ export class CostComponent implements OnInit {
     ngOnInit() {
         this.cars = this.credentials
             .mergeMap(this.propertiesService.apply)
-            .mergeMap(this.scoresService.get)
+            .mergeMap(this.scoresService.apply)
             .combineLatest(this.preferences)
             .mergeMap(this.preferencesService.apply)
             .mergeMap(this.scoreService.apply);

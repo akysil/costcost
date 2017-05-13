@@ -14,7 +14,7 @@ import { EdmundsDefaultsService } from './services/edmunds-defaults.service';
 import { CostFormValidatorsService } from './services/cost-form-validators.service';
 import { CostCascadeService } from './services/cost-cascade.service';
 import { PropertiesService } from './services/properties.service';
-import { CostScoresService } from './services/cost-scores.service';
+import { ScoresService } from './services/cost-scores.service';
 
 import { OrderBy } from './pipes/order-by.pipe';
 
@@ -38,7 +38,7 @@ import { OrderBy } from './pipes/order-by.pipe';
         CostCascadeService,
         CostFormValidatorsService,
         PropertiesService,
-        CostScoresService
+        ScoresService
     ],
     bootstrap: [
         CostComponent

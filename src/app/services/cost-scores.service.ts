@@ -4,12 +4,12 @@ import _u from './cost-utilities.service';
 import scoresServices from './scores/index';
 
 @Injectable()
-export class CostScoresService {
+export class ScoresService {
     
     constructor() {
     }
     
-    public get get() {
+    public get apply() {
         return (cars: any) =>
             ((_u.get(cars, 'length') > 1) && _u.every(cars, 'properties')) ?
                 Observable.of(cars)
