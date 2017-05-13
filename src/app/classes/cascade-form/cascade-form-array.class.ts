@@ -13,8 +13,8 @@ export class CostCascadeFormArray extends FormArray {
     controls: CostCascadeFormControl[];
     
     constructor(controls: CostCascadeFormControl[],
-                validator?: ValidatorFn,
-                asyncValidator?: AsyncValidatorFn) {
+        validator?: ValidatorFn,
+        asyncValidator?: AsyncValidatorFn) {
         super(controls, validator, asyncValidator);
     }
     
@@ -24,9 +24,11 @@ export class CostCascadeFormArray extends FormArray {
     
     get valueObject() {
         return this['controls']
-            .reduce((_value: any, {label, value}: any) => {
-                _value[label] = value;
-                return _value;
+            .reduce((valueObject: any, {label, value}: any) => {
+                if (value) {
+                    valueObject[label] = value;
+                }
+                return valueObject;
             }, {});
     }
 }
