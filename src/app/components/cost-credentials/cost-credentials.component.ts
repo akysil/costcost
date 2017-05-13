@@ -21,7 +21,6 @@ export class CostCredentialsComponent implements OnInit {
     add() {
         if (this.credentials.length > 4) return;
         this.credentials.push({});
-        this.emit();
     }
     
     remove(i: number) {
