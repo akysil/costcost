@@ -97,6 +97,14 @@ function sumProperties$(input: any) {
         .reduce(_.add, 0);
 }
 
+function toParams(input: object): string {
+    return _.chain(input)
+        .entries()
+        .map((pair: any[]) => _.join(pair, '='))
+        .join('&')
+        .value();
+}
+
 function zipWithAdd(...rest: any[]) {
     return _.zipWith.apply(null, [..._.takeWhile(rest, _.isArray), _.add]);
 }
@@ -117,6 +125,7 @@ const uService = {
     stringify,
     sum$,
     sumProperties$,
+    toParams,
     zipWithAdd,
     values$
 };

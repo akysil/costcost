@@ -77,4 +77,8 @@ describe('_u: ', () => {
             expect(originalStack).toMatch(/Not valid for percents\$!/);
         });
     });
+    
+    it('toParams should create params string', () => {
+        expect(service.toParams({a: 1, b: 2})).toBe('a=1&b=2');
+    });
 });
