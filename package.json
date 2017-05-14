@@ -1,6 +1,6 @@
 {
     "name": "CostCost",
-    "version": "0.0.40",
+    "version": "0.0.41",
     "description": "car value comparator",
     "scripts": {
         "clean": "rimraf aot && rimraf coverage && rimraf src/**/*.js && rimraf src/**/*.map && rimraf src/**/*.css",
@@ -40,10 +40,8 @@
         "@angular/router": "^4.0.0",
         "es6-shim": "^0.35.2",
         "lodash": "^4.17.4",
-        "ng-http-interceptor": "^3.0.1",
         "reflect-metadata": "^0.1.9",
         "rxjs": "^5.4.0",
-        "tslib": "^1.7.0",
         "zone.js": "^0.8.5"
     },
     "devDependencies": {
