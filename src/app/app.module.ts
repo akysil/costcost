@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import { HttpInterceptorModule } from 'ng-http-interceptor';
+
 import { CostComponent } from './components/cost/cost.component';
 import { CostTableComponent } from './components/cost-table/cost-table.component';
 import { CostPreferencesComponent } from './components/cost-preferences/cost-preferences.component';
@@ -30,7 +32,8 @@ import { OrderBy } from './pipes/order-by.pipe';
     imports: [
         BrowserModule,
         ReactiveFormsModule,
-        HttpModule
+        HttpModule,
+        HttpInterceptorModule
     ],
     providers: [
         EdmundsService,
