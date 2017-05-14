@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, XHRBackend, RequestOptions } from '@angular/http';
 
 import { CostComponent } from './components/cost/cost.component';
 import { CostTableComponent } from './components/cost-table/cost-table.component';
@@ -17,6 +17,8 @@ import { PropertiesService } from './services/properties.service';
 import { ScoresService } from './services/cost-scores.service';
 
 import { OrderBy } from './pipes/order-by.pipe';
+import { HttpService } from './services/http.service';
+import { CacheService } from './services/cache.service';
 
 @NgModule({
     declarations: [
@@ -33,6 +35,15 @@ import { OrderBy } from './pipes/order-by.pipe';
         HttpModule
     ],
     providers: [
+        CacheService,
+        {
+            provide: HttpService,
+            useFactory:
+                (backend: XHRBackend, defaultOptions: RequestOptions, cache: CacheService) => {
+                    return new HttpService(backend, defaultOptions, cache);
+                },
+            deps: [ XHRBackend, RequestOptions, CacheService]
+        },
         EdmundsService,
         EdmundsDefaultsService,
         CostCascadeService,

@@ -2,6 +2,7 @@ import { async, getTestBed, TestBed } from '@angular/core/testing';
 import { BaseRequestOptions, Http, Response, ResponseOptions, XHRBackend } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 
+import { HttpService } from './http.service';
 import { EdmundsService } from './edmunds.service';
 import { EdmundsDefaultsService } from './edmunds-defaults.service';
 
@@ -11,9 +12,6 @@ describe('EdmundsService', () => {
     let service: EdmundsService;
     let mockResponse: any;
     let mockEdmundsDefaults: any;
-    let makeParams: {
-        (params: Object): Array<String>
-    };
     
     beforeEach(async(() => {
         
@@ -34,10 +32,6 @@ describe('EdmundsService', () => {
             ],
             status: 200
         };
-    
-        makeParams = (params) => {
-            return Object.keys(params).map((key) => `${key}=${params[key]}`);
-        };
         
         TestBed.configureTestingModule({
             providers: [
@@ -49,7 +43,7 @@ describe('EdmundsService', () => {
                         MockBackend,
                         BaseRequestOptions
                     ],
-                    provide: Http,
+                    provide: HttpService,
                     useFactory: (backend: XHRBackend, defaultOptions: BaseRequestOptions) => {
                         return new Http(backend, defaultOptions);
                     }
@@ -65,108 +59,86 @@ describe('EdmundsService', () => {
         mockBackend = testbed.get(MockBackend);
         service = testbed.get(EdmundsService);
         
+        //mockBackend
+        //    .connections
+        //    .subscribe((connection: MockConnection) => {
+        //        connection.mockRespond(new Response(new ResponseOptions(mockResponse)));
+        //    });
+        
     }));
     
     describe('get()', () => {
-        
-        it('should return equipment on subscribe', async(() => {
-            
+    
+        it('should apply EdmundsDefaults to the request', async(() => {
+    
             mockBackend
                 .connections
                 .subscribe((connection: MockConnection) => {
-                    connection.mockRespond(new Response(new ResponseOptions(mockResponse)));
+                    expect(connection.request.url).toMatch(mockEdmundsDefaults.api_base);
+                    expect(connection.request.url).toMatch('test=test');
                 });
-            
-            service.get('makes').subscribe(data => {
-                expect(data).toEqual(mockResponse.body);
-            });
+        
+            service.get('something');
         }));
-        
-        it('should return compose url from options', async(() => {
-            
-            let mockQuery = 'details';
-            
-            let mockQueryOptions = {
-                maker: 'Maker',
-                model: 'Model',
-                year: 'Year',
-                trim: 'Trim',
-                unused: 'Unused'
-            };
-            
+    
+        it('should apply params to the request', async(() => {
             mockBackend
                 .connections
                 .subscribe((connection: MockConnection) => {
-                    expect(connection.request.url)
-                        .toBe(mockEdmundsDefaults.api_base +
-                            mockQuery + '/' +
-                            mockQueryOptions.maker + '/' +
-                            mockQueryOptions.model + '/' +
-                            mockQueryOptions.year + '/' +
-                            mockQueryOptions.trim + '?' +
-                            makeParams(mockEdmundsDefaults.params).join('&')
-                        );
+                    expect(connection.request.url).toMatch('paramKey=paramValue');
+                    expect(connection.request.url).toMatch('test=newTest');
                 });
-            
-            service.get(mockQuery, mockQueryOptions);
+        
+            service.get('something', {}, {paramKey: 'paramValue', test: 'newTest'});
         }));
+    
+        it('should make a "makes" request', async(() => {
         
-        it('should include default params in the URL', async(() => {
-            
+            const url = `${mockEdmundsDefaults.api_base}api/vehicle/v2/makes`;
+        
             mockBackend
                 .connections
                 .subscribe((connection: MockConnection) => {
-                    expect(
-                        makeParams(mockEdmundsDefaults.params)
-                            .every((pair: string) =>
-                                Boolean(connection.request.url.indexOf(pair)))
-                    )
-                        .toBeTruthy();
+                    expect(connection.request.url).toMatch(url);
                 });
-            
+        
             service.get('makes');
         }));
+    
+        it('should make a "style" request', async(() => {
         
-        it('should include custom params and overwrite defaults', async(() => {
-            
-            let customParams = {
-                foo: 'bar',
-                test: 'newTest'
+            const options = {
+                id: 123
             };
-            
+        
+            const url = `${mockEdmundsDefaults.api_base}api/vehicle/v2/styles/${options.id}`;
+        
             mockBackend
                 .connections
                 .subscribe((connection: MockConnection) => {
-                    expect(
-                        makeParams(customParams)
-                            .every((pair: string) =>
-                                Boolean(connection.request.url.indexOf(pair)))
-                    )
-                        .toBeTruthy();
+                    expect(connection.request.url).toMatch(url);
                 });
-            
-            service.get('makes', {}, customParams);
-        }));
         
-        it('should return Error when required query options are missed', async(() => {
-            const query = 'styles';
-            try {
-                service
-                    .get(query, {model: 'Test'})
-                    .subscribe();
-            } catch (e) {
-                expect(e.message).toBe(`Missed options in Edmunds query "${query}"!`);
-            }
+            service.get('style', options);
         }));
+    
+        it('should make a "styles" request', async(() => {
         
-        it('should return Error when query is unrecognized', async(() => {
-            try {
-                service
-                    .get('blah-blah-blah')
-                    .subscribe();
-            } catch (e) {
-                expect(e.message).toBe('Unrecognized Edmunds query "blah-blah-blah"!');
-            }
+            const options = {
+                makeNiceName: 123,
+                modelNiceName: 123,
+                year: 2000
+            };
+        
+            const url = `${mockEdmundsDefaults.api_base}api/vehicle/v2/${options.makeNiceName}/${options.modelNiceName}/${options.year}/styles`;
+        
+            mockBackend
+                .connections
+                .subscribe((connection: MockConnection) => {
+                    expect(connection.request.url).toMatch(url);
+                });
+        
+            service.get('styles', options);
         }));
     });
 });
