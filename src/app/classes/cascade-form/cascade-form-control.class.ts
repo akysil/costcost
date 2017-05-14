@@ -55,7 +55,7 @@ export class CostCascadeFormControl extends FormControl {
             this.enable(); // bug: invoke value changes twice
         };
         const onError = (e: Error) => {
-            console.log(e);
+            console.error(e);
             this._options = null;
         };
         
