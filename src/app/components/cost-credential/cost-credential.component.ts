@@ -17,6 +17,9 @@ import {
 import { CostCascadeService } from '../../services/cost-cascade.service';
 import { CostFormValidatorsService } from '../../services/cost-form-validators.service';
 import _u from '../../services/cost-utilities.service';
+import { CostCascadeValue } from '../../interfaces/cost-cascade-form.interface';
+
+export interface Credential extends CostCascadeValue {}
 
 @Component({
     selector: 'cost-credential',
@@ -25,10 +28,9 @@ import _u from '../../services/cost-utilities.service';
 })
 export class CostCredentialComponent implements OnInit {
     
-    private _timeStamp: number;
     form: CostCascadeFormGroup;
     
-    @Output() valueChanges: EventEmitter<any> = new EventEmitter();
+    @Output() valueChanges: EventEmitter<Credential> = new EventEmitter();
     
     constructor(private service: CostCascadeService,
         private validators: CostFormValidatorsService) {
@@ -36,11 +38,8 @@ export class CostCredentialComponent implements OnInit {
     
     ngOnInit() {
         
-        this._timeStamp = _u.now();
-        
         this.form =
             new CostCascadeFormGroup({
-                _timeStamp: new FormControl(_u.now()),
                 zip: new FormControl('', [
                     Validators.required,
                     Validators.minLength(5),
@@ -73,9 +72,6 @@ export class CostCredentialComponent implements OnInit {
     }
     
     get emit() {
-        return (credentials: any) => this.valueChanges.emit({
-            _timeStamp: this._timeStamp,
-            credentials
-        });
+        return (credentials: Credential) => this.valueChanges.emit(credentials);
     }
 }

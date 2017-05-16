@@ -4,6 +4,8 @@ import { ScoresService } from '../../services/cost-scores.service';
 import { Observable } from 'rxjs';
 import { PreferencesService } from '../../services/preferences.service';
 import { ScoreService } from '../../services/score.service';
+import { Car } from '../../interfaces/car.interface';
+
 import _u from '../../services/cost-utilities.service';
 
 @Component({
@@ -14,7 +16,8 @@ import _u from '../../services/cost-utilities.service';
 })
 export class CostComponent implements OnInit {
     public preferences: EventEmitter<any> = new EventEmitter();
-    public credentials: EventEmitter<any> = new EventEmitter();
+    // TODO: rename credentials to cars
+    public credentials: EventEmitter<Car[]> = new EventEmitter();
     public cars: Observable<any>;
     
     constructor(

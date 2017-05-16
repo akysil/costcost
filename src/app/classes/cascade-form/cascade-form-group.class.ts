@@ -35,7 +35,7 @@ export class CostCascadeFormGroup extends FormGroup {
     }
     
     get emit() {
-        return (value: any) => {
+        return (value: CostCascadeValue) => {
             const newValue = JSON.stringify(value);
             if (newValue != this._flattenValueCache) {
                 this._flattenValueCache = newValue;
