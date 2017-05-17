@@ -3,7 +3,7 @@ export interface CostCarOptions {
     rating?: CostCarOptionsRating,
     tmv?: number,
     tco?: number,
-    warranty?: any,
+    warranty?: CostCarOptionsWarranty,
     engine?: CostCarOptionsEngine,
     transmission?: CostCarOptionsTransmission,
     offRoad?: CostCarOptionsOffRoad,
@@ -54,4 +54,8 @@ export interface CostCarOptionsComfort {
 
 export interface CostCarOptionsSafety {
     nhtsa?: number
+}
+
+export interface CostCarOptionsWarranty {
+    [index: string]: any
 }

@@ -2,5 +2,5 @@ import { Credential } from '../components/cost-credential/cost-credential.compon
 
 export interface Car {
     timeStamp: number;
-    credentials?: Credential;
+    credentials: Credential;
 }

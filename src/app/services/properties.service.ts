@@ -2,246 +2,205 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { EdmundsService } from './edmunds.service';
-import { CostCascadeValue } from '../interfaces/cost-cascade-form.interface';
-import { CostCarOptions } from '../interfaces/cost-car-options.interface';
+import {
+    CostCarOptions,
+    CostCarOptionsComfort,
+    CostCarOptionsEngine,
+    CostCarOptionsOffRoad,
+    CostCarOptionsRoominess,
+    CostCarOptionsSafety,
+    CostCarOptionsTransmission,
+    CostCarOptionsWarranty
+} from '../interfaces/cost-car-options.interface';
+import { Car } from '../interfaces/car.interface';
 
 import _u from './cost-utilities.service';
 
 @Injectable()
 export class PropertiesService {
     
-    constructor(private data: EdmundsService) {
-        //
+    properties: any[] = [
+        {name: 'rating', query: 'rating'},
+        {name: 'tmv', query: 'tmv'},
+        {name: 'tco', query: 'tco'},
+        {name: 'warranty', query: 'equipment'},
+        {name: 'engine', query: 'equipment'},
+        {name: 'transmission', query: 'equipment'},
+        {name: 'offRoad', query: 'equipment'},
+        {name: 'roominess', query: 'equipment'},
+        {name: 'comfort', query: 'equipment'},
+        {name: 'safety', query: 'safety'}
+    ];
+    
+    constructor(private edmundsService: EdmundsService) {
     }
     
     get apply() {
         
-        return (cars: any) => _u.get(cars, 'length') ?
+        return (cars: Car[]) => Boolean(cars.length) ?
             Observable.from(cars)
-                .mergeMap(this.getOptions)
+                .mergeMap(this.setProperties$)
                 .toArray() :
             Observable.of(cars);
     }
     
-    get getOptions() {
-        return (car: any): Observable<any> => {
+    get setProperties$() {
+        return ({credentials, ...rest}: Car): Observable<any> => {
             
-            const {state, styleId, zip} = <CostCascadeValue>_u.get(car, 'credentials', {});
+            const {state, styleId, zip} = credentials;
             
-            return (state && styleId && zip) ? Observable.merge(
-                    this.getRating(styleId),
-                    this.getTMV(state, styleId, zip),
-                    this.getTCO(state, styleId, zip),
-                    this.getWarranty(styleId),
-                    this.getEngine(styleId),
-                    this.getTransmission(styleId),
-                    this.getOffRoad(styleId),
-                    this.getRoominess(styleId),
-                    this.getComfort(styleId),
-                    this.getSafety(styleId)
-                )
+            if (!state || !styleId || !zip) {
+                return Observable.of({credentials, ...rest});
+            }
+            
+            const properties: Observable<CostCarOptions>[] = this.properties
+                .map(({name, query}: any) => {
+                    const picker = (this[`pick${_u.upperFirst(name)}`]) ||
+                        ((): any => ({[name]: null}));
+                    
+                    return this.edmundsService
+                        .get(query, credentials)
+                        .map((data: any) => ({[name]: picker(data)}))
+                        .catch(() => Observable.of({[name]: null}));
+                });
+    
+            return Observable.merge.apply(this, properties)
                 .reduce(_u.assign)
-                .map((properties: any) => ({properties, ...car})) :
-                Observable.of(car);
+                .map((properties: any) => ({properties, credentials, ...rest}));
         };
     }
     
-    get getStyle() {
-        return (id: string): Observable<any> => {
-            return this.data.get('style', {id});
-        }
+    get pickRating() {
+        return (data: any) => ({consumer: Number(data.averageRating)});
     }
     
-    get getRating() {
-        return (id: string): Observable<CostCarOptions> => this.data.get('rating', {id})
-            .map((data: any) => ({rating: {consumer: Number(data.averageRating)}}));
+    get pickTmv() {
+        return ({tmv: {offerPrice: tmv}}: any) => tmv;
     }
     
-    get getTMV() {
-        return (state: string, styleId: string, zip: string): Observable<CostCarOptions> => {
-            if (state === 'new') {
-                return this.data.get('tmv', {styleId, zip})
-                    .map(({tmv: {offerPrice: tmv}}: any) => ({tmv}));
-            }
-            return Observable.of();
-        };
+    get pickTco() {
+        return ({value}: any) => value;
     }
     
-    get getTCO() {
-        return (state: string, styleId: string, zip: string): Observable<CostCarOptions> => {
-            if (state === 'new') {
-                return this.data.get('tco', {styleId, zip})
-                    .map(({value}: any) => ({tco: value}));
-            }
-            return Observable.of();
-        };
-    }
-    
-    get getWarranty() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('equipment', {styleId})
-                .map(composeWarranty);
-            
-            function composeWarranty({equipment}: any): CostCarOptions {
-                const warrantiesArray = equipment.filter(({equipmentType}: any) => equipmentType === 'WARRANTY');
-                return {
-                    warranty: warrantiesArray.reduce((warranty: any, {attributes}: any) => {
-                        const type = findInAttributes('Warranty Type').toLowerCase().replace(' ', '_');
-                        const mileage = findInAttributes('Warranty Maximum Mileage') || 'unlimited';
-                        const years = findInAttributes('Warranty Maximum Years') || 'unlimited';
-                        return {...{[type]: {mileage, years}}, ...warranty};
-                        
-                        function findInAttributes(query: string) {
-                            return Object(_u.findInCollection(attributes, 'name', query)).value;
-                        }
-                    }, {})
-                };
-            }
-        }
-    }
-    
-    get getEngine() {
-        return (styleId: string): Observable<any> => {
-            return this.data.get('equipment', {styleId}, {availability: 'standard'})
-                .map(composeEngine);
-            
-            function composeEngine({equipment}: any): CostCarOptions {
-                const horsepower = Number(findInEngine('horsepower'));
-                const torque = Number(findInEngine('torque'));
-                const weight = Number(findInEquipment('Specifications', 'Tco Curb Weight'));
+    get pickWarranty() {
+        return ({equipment}: any): CostCarOptionsWarranty => {
+            const warrantiesArray = equipment.filter(({equipmentType}: any) => equipmentType === 'WARRANTY');
+            return warrantiesArray.reduce((warranty: any, {attributes}: any) => {
+                const type = findInAttributes('Warranty Type').toLowerCase().replace(' ', '_');
+                const mileage = findInAttributes('Warranty Maximum Mileage') || 'unlimited';
+                const years = findInAttributes('Warranty Maximum Years') || 'unlimited';
+                return {...{[type]: {mileage, years}}, ...warranty};
                 
-                return {
-                    engine: {
-                        horsepowerToWeight: Math.round(horsepower / weight * 100000),
-                        torqueToWeight: Math.round(torque / weight * 100000),
-                        rpm: findInEngine('rpm'),
-                        type: findInEngine('type')
-                    }
-                };
-                
-                function findInEngine(query: string) {
-                    return _u.findInCollection(equipment, 'equipmentType', 'ENGINE')[query];
+                function findInAttributes(query: string) {
+                    return Object(_u.findInCollection(attributes, 'name', query)).value;
                 }
-                
-                function findInEquipment(name: string, attrName?: string) {
-                    return _u.findInEquipment(equipment, name, attrName);
-                }
+            }, {});
+        }
+    }
+    
+    get pickEngine() {
+        return ({equipment}: any): CostCarOptionsEngine => {
+            const horsepower = Number(findInEngine('horsepower'));
+            const torque = Number(findInEngine('torque'));
+            const weight = Number(findInEquipment('Specifications', 'Tco Curb Weight'));
+            
+            return {
+                horsepowerToWeight: Math.round(horsepower / weight * 100000),
+                torqueToWeight: Math.round(torque / weight * 100000),
+                rpm: findInEngine('rpm'),
+                type: findInEngine('type')
+            };
+            
+            function findInEngine(query: string) {
+                return _u.findInCollection(equipment, 'equipmentType', 'ENGINE')[query];
+            }
+            
+            function findInEquipment(name: string, attrName?: string) {
+                return _u.findInEquipment(equipment, name, attrName);
             }
         }
     }
     
-    get getTransmission() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('equipment', {styleId}, {availability: 'standard'})
-                .map(composeTransmission);
+    get pickTransmission() {
+        return ({equipment}: any): CostCarOptionsTransmission => {
             
-            function composeTransmission({equipment}: any): CostCarOptions {
-                
-                return {
-                    transmission: {
-                        type: findInTransmission('transmissionType'),
-                        numberOfSpeeds: Number(findInTransmission('numberOfSpeeds'))
-                    }
-                };
-                
-                function findInTransmission(query: string) {
-                    return _u.findInCollection(equipment, 'equipmentType', 'TRANSMISSION')[query];
-                }
+            return {
+                type: findInTransmission('transmissionType'),
+                numberOfSpeeds: Number(findInTransmission('numberOfSpeeds'))
+            };
+            
+            function findInTransmission(query: string) {
+                return _u.findInCollection(equipment, 'equipmentType', 'TRANSMISSION')[query];
             }
         }
     }
     
-    get getOffRoad() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('equipment', {styleId}, {availability: 'standard'})
-                .map(composeOffRoad);
+    get pickOffRoad() {
+        return ({equipment}: any): CostCarOptionsOffRoad => {
             
-            function composeOffRoad({equipment}: any): CostCarOptions {
-                
-                const driveType = findInEquipment('Drive Type', 'Driven Wheels');
-                const groundClearance = Number(findInEquipment('Exterior Dimensions', 'Minimum Ground Clearance'));
-                
-                return {
-                    offRoad: {
-                        driveType,
-                        groundClearance
-                    }
-                };
-                
-                function findInEquipment(name: string, attrName?: string) {
-                    return _u.findInEquipment(equipment, name, attrName);
-                }
+            const driveType = findInEquipment('Drive Type', 'Driven Wheels');
+            const groundClearance = Number(findInEquipment('Exterior Dimensions', 'Minimum Ground Clearance'));
+            
+            return {
+                driveType,
+                groundClearance
+            };
+            
+            function findInEquipment(name: string, attrName?: string) {
+                return _u.findInEquipment(equipment, name, attrName);
             }
         }
     }
     
-    get getRoominess() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('equipment', {styleId}, {availability: 'standard'})
-                .map(composeRoominess);
+    get pickRoominess() {
+        return ({equipment}: any): CostCarOptionsRoominess => {
             
-            function composeRoominess({equipment}: any): CostCarOptions {
-                
-                const cargoCapacity = Number(findInEquipment('Cargo Dimensions', 'Cargo Capacity, All Seats In Place'));
-                const doorsNumber = Number(findInEquipment('Doors', 'Number Of Doors'));
-                const seatsNumber = findInEquipment('Seating Configuration').attributes
-                    .filter(({name}: any) => name.match(/Row Seating Capacity/i))
-                    .reduce((seats: number, item: any) => {
-                        return seats + Number(item.value);
-                    }, 0);
-                
-                return {
-                    roominess: {
-                        cargoCapacity,
-                        doorsNumber,
-                        seatsNumber
-                    }
-                };
-                
-                function findInEquipment(name: string, attrName?: string) {
-                    return _u.findInEquipment(equipment, name, attrName);
-                }
+            const cargoCapacity = Number(findInEquipment('Cargo Dimensions', 'Cargo Capacity, All Seats In Place'));
+            const doorsNumber = Number(findInEquipment('Doors', 'Number Of Doors'));
+            const seatsNumber = findInEquipment('Seating Configuration').attributes
+                .filter(({name}: any) => name.match(/Row Seating Capacity/i))
+                .reduce((seats: number, item: any) => {
+                    return seats + Number(item.value);
+                }, 0);
+            
+            return {
+                cargoCapacity,
+                doorsNumber,
+                seatsNumber
+            };
+            
+            function findInEquipment(name: string, attrName?: string) {
+                return _u.findInEquipment(equipment, name, attrName);
             }
         }
     }
     
-    get getComfort() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('equipment', {styleId}, {availability: 'standard'})
-                .map(composeComfort);
+    get pickComfort() {
+        return ({equipment}: any): CostCarOptionsComfort => {
             
-            function composeComfort({equipment}: any): CostCarOptions {
-                
-                const seatUpholstery = findInEquipment('1st Row Seats', '1st Row Upholstery');
-                const steeringWheelTrim = findInEquipment('Steering Wheel', 'Steering Wheel Trim');
-                const legRoom = [
-                    Number(findInEquipment('Interior Dimensions', '1st Row Leg Room')),
-                    Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'))
-                ];
-                
-                return {
-                    comfort: {
-                        seatUpholstery,
-                        steeringWheelTrim,
-                        legRoom
-                    }
-                };
-                
-                function findInEquipment(name: string, attrName?: string) {
-                    return _u.findInEquipment(equipment, name, attrName);
-                }
+            const seatUpholstery = findInEquipment('1st Row Seats', '1st Row Upholstery');
+            const steeringWheelTrim = findInEquipment('Steering Wheel', 'Steering Wheel Trim');
+            const legRoom = [
+                Number(findInEquipment('Interior Dimensions', '1st Row Leg Room')),
+                Number(findInEquipment('Interior Dimensions', '2nd Row Leg Room'))
+            ];
+            
+            return {
+                seatUpholstery,
+                steeringWheelTrim,
+                legRoom
+            };
+            
+            function findInEquipment(name: string, attrName?: string) {
+                return _u.findInEquipment(equipment, name, attrName);
             }
         }
     }
     
-    get getSafety() {
-        return (styleId: string): Observable<CostCarOptions> => {
-            return this.data.get('safety', {styleId})
-                .map(composeSafety);
-            
-            function composeSafety(data: any): CostCarOptions {
-                return (data.nhtsa) ? {safety: {nhtsa: Number(data.nhtsa.overall)}} : {safety: null};
-            }
+    get pickSafety() {
+        return (data: any): CostCarOptionsSafety => {
+            const nhtsa = _u.get(data, 'nhtsa.overall');
+            return (nhtsa) ? {nhtsa: Number(nhtsa)} : null;
         }
     }
     

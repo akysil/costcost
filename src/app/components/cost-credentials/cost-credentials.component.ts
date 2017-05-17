@@ -24,7 +24,7 @@ export class CostCredentialsComponent implements OnInit {
     
     add() {
         if (this.cars.length > 4) return;
-        this.cars.push({timeStamp: _u.now()});
+        this.cars.push({timeStamp: _u.now(), credentials: {}});
     }
     
     remove(i: number) {

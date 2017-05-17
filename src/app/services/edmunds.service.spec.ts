@@ -108,10 +108,10 @@ describe('EdmundsService', () => {
         it('should make a "style" request', async(() => {
         
             const options = {
-                id: 123
+                styleId: 123
             };
         
-            const url = `${mockEdmundsDefaults.api_base}api/vehicle/v2/styles/${options.id}`;
+            const url = `${mockEdmundsDefaults.api_base}api/vehicle/v2/styles/${options.styleId}`;
         
             mockBackend
                 .connections
