@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import _u from '../../services/cost-utilities.service';
 import { Observable } from 'rxjs/Observable';
+import { PropertiesService } from '../../services/properties.service';
 
 @Component({
     selector: 'cost-table',
@@ -12,17 +13,19 @@ import { Observable } from 'rxjs/Observable';
 })
 export class CostTableComponent implements OnInit {
     
-    values: any = _u.values; // TODO: move to pipe
+    properties: string[];
     @Input() data: any;
     cars: Observable<any>;
     
-    constructor() {
-        //
+    constructor(private propertiesService: PropertiesService) {
+        this.properties = _u.map(propertiesService.properties, 'name');
     }
     
     ngOnInit() {
         this.cars = this.data
             .startWith([])
         ;
+    
+        // this.cars.subscribe((cars: any) => console.log(_u.stringify(cars, null, 4)));
     }
 }
