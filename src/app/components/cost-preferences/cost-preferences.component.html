@@ -1,21 +1,12 @@
 <form [formGroup]="form" novalidate>
-
-    <label>
-        Performance
-        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="performance">
-        {{form.get('performance').value}}
+    <label *ngFor="let control of preferences">
+        {{control}}
+        <input
+          type="{{defaults.type}}"
+          min="{{defaults.minValue}}"
+          max="{{defaults.maxValue}}"
+          formControlName="{{control}}">
+        {{form.get(control).value}}
+        <br>
     </label>
-<br>
-    <label>
-        Prestige
-        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="prestige">
-        {{form.get('prestige').value}}
-    </label>
-<br>
-    <label>
-        Price
-        <input type="{{defaults.type}}" min="{{defaults.min}}" max="{{defaults.max}}" formControlName="price">
-        {{form.get('price').value}}
-    </label>
-
 </form>

@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Input, Output, DoCheck } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import _u from '../../services/cost-utilities.service';
 
 @Component({
@@ -8,21 +8,24 @@ import _u from '../../services/cost-utilities.service';
 })
 export class CostPreferencesComponent implements OnInit {
     
-    defaults: any;
-    form: FormGroup;
+    defaults: any = {
+        type: 'range',
+        minValue: '0',
+        maxValue: '20',
+        startValue: '10'
+    };
+    preferences: string[] = [
+        'performance',
+        'prestige',
+        'price',
+        'test'
+    ];
+    form: FormGroup = new FormGroup({});
     
     constructor() {
-        this.defaults = {
-            type: 'range',
-            min: '1',
-            max: '10'
-        };
-    
-        this.form = new FormGroup({
-            performance: new FormControl(this.defaults.min),
-            prestige: new FormControl(this.defaults.min),
-            price: new FormControl(this.defaults.min),
-        });
+        
+        this.preferences.forEach((p: string) =>
+            this.form.addControl(p, new FormControl(this.defaults.startValue)));
     
         this.form.valueChanges.subscribe((value: any) => this.emit(value));
     }
