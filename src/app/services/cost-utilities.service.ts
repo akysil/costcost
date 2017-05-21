@@ -33,6 +33,10 @@ function findInEquipment(equipment: any[], name: string, attrName?: string) {
         item;
 }
 
+function flatten$(input: any[]) {
+    return Observable.from(input);
+}
+
 function invertPercents$(values: number[]) {
     return Observable.from(values)
         .map((value: number) => 100 - value)
@@ -115,6 +119,7 @@ function values$(input: any) {
 
 const uService = {
     acc,
+    flatten$,
     findInCollection,
     findInEquipment,
     invertPercents$,
