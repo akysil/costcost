@@ -35,7 +35,9 @@ export class CostComponent implements OnInit {
             .combineLatest(this.preferences)
             .mergeMap(this.preferencesService.apply)
             .mergeMap(this.scoreService.apply);
-        
-        // this.cars.subscribe((cars: any) => console.log(cars));
+    
+        //this.credentials
+        //    .mergeMap(this.propertiesService.apply)
+        //    .subscribe((cars: any) => console.log(_u.stringify(cars, null, 4)));
     }
 }

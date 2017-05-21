@@ -199,8 +199,10 @@ export class PropertiesService {
     
     get pickSafety() {
         return (data: any): CostCarOptionsSafety => {
-            const nhtsa = _u.get(data, 'nhtsa.overall');
-            return (nhtsa) ? {nhtsa: Number(nhtsa)} : null;
+            return {
+                nhtsa: Number(_u.get(data, 'nhtsa.overall')) || null,
+                iihs: _u.get(data, 'iihs') || null
+            };
         }
     }
     
