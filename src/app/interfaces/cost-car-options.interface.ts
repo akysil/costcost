@@ -53,6 +53,7 @@ export interface CostCarOptionsComfort {
 }
 
 export interface CostCarOptionsSafety {
+    iihs?: any[]
     nhtsa?: number
 }
 
